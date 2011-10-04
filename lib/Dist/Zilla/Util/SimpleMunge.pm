@@ -26,7 +26,7 @@ use Moose;
 =cut
 
 =func munge_file
-  
+
   # munge_file ( $FILE , \%CONFIGURATION )
 
   munge_file(
@@ -43,7 +43,7 @@ A L<Dist::Zilla::Role::File> object to munge.
 
 =head4 %CONFIGURATION
 
-  { 
+  {
     via => $CODEREF,
     lazy => $LAZINESS,
   }
@@ -58,7 +58,7 @@ the contents of that file.
 Return new content for the file via C<return>
 
   sub {
-    my ( $file, $content ) = @_ ; 
+    my ( $file, $content ) = @_ ;
     ...;
     return $newcontent;
   }
