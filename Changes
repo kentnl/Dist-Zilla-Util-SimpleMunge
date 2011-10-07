@@ -1,6 +1,13 @@
 Release history for Dist-Zilla-Util-FileMunge-Simple
 
 {{$NEXT}}
+ [Internals]
+ - Rehash native munging interface to be more flexible, optional, and
+   extendable. ( 0.1.0-source-2-gd1911aa )
+
+ [Packaging]
+ - Try out not-yet-released patches to the Dzil Twitter Plugin for
+   supporting -TRIAL
 
 0.1.0 2011-10-07T05:33:55Z
  - First version, Proof of Concept, but not yet feature complete.
