@@ -39,7 +39,7 @@ use Sub::Exporter -setup => { exports => [qw[ munge_file munge_files ]], };
 
 =head4 $FILE
 
-A L<Dist::Zilla::Role::File> object to munge.
+A L<< C<::Role::File> |Dist::Zilla::Role::File >> object to munge.
 
 =head4 %CONFIGURATION
 
@@ -52,7 +52,7 @@ A L<Dist::Zilla::Role::File> object to munge.
 
 Called to munge the file itself.
 
-Passed a reference to the L<Dist::Zilla::Role::File> instance, and a scalar containing
+Passed a reference to the L<< C<::Role::File> |Dist::Zilla::Role::File >> instance, and a scalar containing
 the contents of that file.
 
 Return new content for the file via C<return>
@@ -72,14 +72,14 @@ being munged.
   $LAZINESS = 0     ;  # Munge immediately
   $LAZINESS = 1     ;  # Defer munging till as late as possible.
 
-For things that are normally backed by scalar values, such as L<Dist::Zilla::File::OnDisk> and
-L<Dist::Zilla::File::InMemory>, the laziness is equivalent to C< $LAZINESS = 0 >, which is not lazy at all, and
+For things that are normally backed by scalar values, such as L<< C<::File::OnDisk> |Dist::Zilla::File::OnDisk >> and
+L<< C<::File::InMemory> |Dist::Zilla::File::InMemory >>, the laziness is equivalent to C< $LAZINESS = 0 >, which is not lazy at all, and
 munges the file content immediately.
 
-For things backed by code, such as L<Dist::Zilla::File::FromCode>, munging defaults to C< $LAZINESS = 1 >, where the
+For things backed by code, such as L<< C<::File::FromCode> |Dist::Zilla::File::FromCode >>, munging defaults to C< $LAZINESS = 1 >, where the
 actual munging sub you specify is executed as late as possible.
 
-You can specify the C< $LAZINESS > value explicitly if you want to customize the behaviour, ie: Make something that
+You can specify the C< $LAZINESS > value explicitly if you want to customize the behaviour, i.e.: Make something that
 is presently a scalar type get munged as late as possible ( converting the file into a C<FromCode> file ), or make
 something currently backed by code get munged "now", ( converting the file into a C<InMemory> file )
 
@@ -91,10 +91,10 @@ sub _native_munge {
   # later.
   # this specific api is not fixed yet and prone to break
   my ( $file, $config ) = @_;
-
-  local $@;
+  ## no critic (ProhibitPunctuationVars)
+  local $@ = undef;
   my $success = 0;
-  eval { $success = $file->munge($config); };
+  eval { $success = $file->munge($config); 1 } or $success = 0;
   return $success if $success;
   return 0;
 }
@@ -102,7 +102,11 @@ sub _native_munge {
 sub _fromcode_munge {
   my ( $file, $config ) = @_;
   if ( defined $config->{lazy} and $config->{lazy} == 0 ) {
-    die "De-Lazifying a from-code file is not yet implemented";
+    __PACKAGE__->_error(
+      message => 'De-Lazifying a from-code file is not yet implemented',
+      id      => 'code_munge_no_downgrade',
+      tags    => [qw( downgrade fromcode toscalar nonlazy )],
+    );
   }
   my $coderef = $file->code();
   $file->code(
@@ -116,7 +120,11 @@ sub _fromcode_munge {
 sub _scalar_munge {
   my ( $file, $config ) = @_;
   if ( defined $config->{lazy} and $config->{lazy} == 1 ) {
-    die "Forced upgrade from scalar to coderef not yet implemented";
+    __PACKAGE__->_error(
+      message => 'Forced upgrade from scalar to coderef not yet implemented',
+      id      => 'scalar_munge_no_upgrade',
+      tags    => [qw( upgrade scalar tocoderef lazy )],
+    );
   }
   $file->content( $config->{via}->( $file, $file->content ) );
   return 1;
@@ -174,6 +182,10 @@ sub munge_files {
   return 1;
 }
 
-
+sub _error {
+  my ( $self, %config ) = @_;
+  require Carp;
+  return Carp::carp( $config{message} );
+}
 
 1;
