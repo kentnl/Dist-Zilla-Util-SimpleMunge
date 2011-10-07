@@ -5,7 +5,7 @@ package Dist::Zilla::Util::SimpleMunge;
 
 # ABSTRACT: Make munging File::FromCode and File::InMemory easier.
 
-use Sub::Exporter -setup => { exports => [qw[ munge_file munge_files ]], }
+use Sub::Exporter -setup => { exports => [qw[ munge_file munge_files ]], };
 
 =head1 SYNOPSIS
 
@@ -85,7 +85,7 @@ something currently backed by code get munged "now", ( converting the file into 
 
 =cut
 
-  sub _native_munge {
+sub _native_munge {
 
   # mostly todo at present to allow native class based overriding of munge behaviour
   # later.
@@ -174,7 +174,6 @@ sub munge_files {
   return 1;
 }
 
-__PACKAGE__->meta->make_immutable;
-no Moose;
+
 
 1;
