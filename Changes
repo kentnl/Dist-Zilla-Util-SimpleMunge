@@ -1,6 +1,8 @@
 Release history for Dist-Zilla-Util-FileMunge-Simple
 
 {{$NEXT}}
+
+0.1.1 2011-10-07T17:21:53Z
  [Internals]
  - Rehash native munging interface to be more flexible, optional, and
    extendable. ( 0.1.0-source-2-gd1911aa )
