@@ -7,6 +7,8 @@ use Module::Build 0.3601;
 
 my %module_build_args = (
   "build_requires" => {
+    "Dist::Zilla::File::FromCode" => 0,
+    "Dist::Zilla::File::InMemory" => 0,
     "File::Find" => 0,
     "File::Temp" => 0,
     "Module::Build" => "0.3601",
@@ -20,7 +22,7 @@ my %module_build_args = (
     "Kent Fredric <kentnl\@cpan.org>"
   ],
   "dist_name" => "Dist-Zilla-Util-SimpleMunge",
-  "dist_version" => "0.1.1",
+  "dist_version" => "0.1.2",
   "license" => "perl",
   "module_name" => "Dist::Zilla::Util::SimpleMunge",
   "recommends" => {},

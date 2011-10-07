@@ -45,6 +45,8 @@
       },
       "test" : {
          "requires" : {
+            "Dist::Zilla::File::FromCode" : 0,
+            "Dist::Zilla::File::InMemory" : 0,
             "File::Find" : 0,
             "File::Temp" : 0,
             "Test::More" : "0.88"
@@ -54,10 +56,10 @@
    "provides" : {
       "Dist::Zilla::Util::SimpleMunge" : {
          "file" : "lib/Dist/Zilla/Util/SimpleMunge.pm",
-         "version" : "v0.1.1"
+         "version" : "v0.1.2"
       }
    },
-   "release_status" : "testing",
+   "release_status" : "stable",
    "resources" : {
       "homepage" : "https://github.com/kentfredric/Dist-Zilla-Util-SimpleMunge",
       "repository" : {
@@ -66,10 +68,12 @@
          "web" : "https://github.com/kentfredric/Dist-Zilla-Util-SimpleMunge"
       }
    },
-   "version" : "0.1.1",
+   "version" : "0.1.2",
    "x_BuiltWith" : {
       "modules" : {
          "Carp" : "1.20",
+         "Dist::Zilla::File::FromCode" : "4.300002",
+         "Dist::Zilla::File::InMemory" : "4.300002",
          "Dist::Zilla::PluginBundle::Author::KENTNL" : "1.0.21",
          "Dist::Zilla::PluginBundle::Author::KENTNL::Lite" : "NA(possibly not installed)",
          "File::Find" : "1.19",
@@ -378,7 +382,7 @@
       "zilla" : {
          "class" : "Dist::Zilla::Dist::Builder",
          "config" : {
-            "is_trial" : "1"
+            "is_trial" : "0"
          },
          "version" : "4.300002"
       }

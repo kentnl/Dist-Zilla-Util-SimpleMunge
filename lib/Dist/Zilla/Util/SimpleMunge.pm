@@ -6,7 +6,7 @@ BEGIN {
   $Dist::Zilla::Util::SimpleMunge::AUTHORITY = 'cpan:KENTNL';
 }
 {
-  $Dist::Zilla::Util::SimpleMunge::VERSION = '0.1.1'; # TRIAL
+  $Dist::Zilla::Util::SimpleMunge::VERSION = '0.1.2';
 }
 
 # ABSTRACT: Make munging File::FromCode and File::InMemory easier.
@@ -108,7 +108,7 @@ Dist::Zilla::Util::SimpleMunge - Make munging File::FromCode and File::InMemory 
 
 =head1 VERSION
 
-version 0.1.1
+version 0.1.2
 
 =head1 SYNOPSIS
 

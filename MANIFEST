@@ -11,6 +11,7 @@ lib/Dist/Zilla/Util/SimpleMunge.pm
 perlcritic.rc
 t/00-compile.t
 t/000-report-versions-tiny.t
+t/01-basic.t
 weaver.ini
 xt/author/critic.t
 xt/release/cpan-changes.t
