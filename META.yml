@@ -19,7 +19,7 @@ name: Dist-Zilla-Util-SimpleMunge
 provides:
   Dist::Zilla::Util::SimpleMunge:
     file: lib/Dist/Zilla/Util/SimpleMunge.pm
-    version: v0.1.0
+    version: v0.1.1
 requires:
   Carp: 0
   Sub::Exporter: 0
@@ -28,7 +28,7 @@ requires:
 resources:
   homepage: https://github.com/kentfredric/Dist-Zilla-Util-SimpleMunge
   repository: https://github.com/kentfredric/Dist-Zilla-Util-SimpleMunge.git
-version: 0.1.0
+version: 0.1.1
 x_BuiltWith:
   modules:
     Carp: 1.20

@@ -6,7 +6,7 @@ BEGIN {
   $Dist::Zilla::Util::SimpleMunge::AUTHORITY = 'cpan:KENTNL';
 }
 {
-  $Dist::Zilla::Util::SimpleMunge::VERSION = '0.1.0'; # TRIAL
+  $Dist::Zilla::Util::SimpleMunge::VERSION = '0.1.1'; # TRIAL
 }
 
 # ABSTRACT: Make munging File::FromCode and File::InMemory easier.
@@ -14,20 +14,6 @@ BEGIN {
 use Sub::Exporter -setup => { exports => [qw[ munge_file munge_files ]], };
 
 
-
-sub _native_munge {
-
-  # mostly todo at present to allow native class based overriding of munge behaviour
-  # later.
-  # this specific api is not fixed yet and prone to break
-  my ( $file, $config ) = @_;
-  ## no critic (ProhibitPunctuationVars)
-  local $@ = undef;
-  my $success = 0;
-  eval { $success = $file->munge($config); 1 } or $success = 0;
-  return $success if $success;
-  return 0;
-}
 
 sub _fromcode_munge {
   my ( $file, $config ) = @_;
@@ -62,8 +48,33 @@ sub _scalar_munge {
 
 sub munge_file {
   my ( $file, $config ) = @_;
-  if ( $file->can('munge') && ( my $success = _native_munge( $file, $config ) ) ) {
-    return $success;
+
+  # This codeblock exists for permitting one or more forms of "native" munging.
+  # Presently undocumented as the underlying support is still non-existent.
+  #
+  # There is only presently one supported option
+  #    { native => "filemungeapi" }
+  # which will call the ->munge method on the file instance
+  # using the form currently defined by this pull request:
+  #
+  #   https://github.com/rjbs/dist-zilla/pull/24
+  #
+  # This allows for per-file custom class methods for defining exactly how munge is performed
+  # but presently lacks passing arbitrary munge control flags ( ie: forced lazy etc )
+  #
+  # If it doesn't look like the file in question conforms to the requested munge api,
+  # then it falls back to traditional dzil.
+  #
+  # An object with a ->code method is assumed to be from code,
+  #
+  # and everything else is assumed to be in-memory scalars.
+  #
+  if ( exists $config->{native} and defined $config->{native} ) {
+    if ( $config->{native} eq 'filemungeapi' ) {    # The API as proposed by Kentnl
+      if ( $file->can('munge') ) {
+        return $file->munge( $config->{via} );
+      }
+    }
   }
   if ( $file->can('code') ) {
     return _fromcode_munge( $file, $config );
@@ -97,7 +108,7 @@ Dist::Zilla::Util::SimpleMunge - Make munging File::FromCode and File::InMemory 
 
 =head1 VERSION
 
-version 0.1.0
+version 0.1.1
 
 =head1 SYNOPSIS
 

@@ -3,7 +3,7 @@ NAME
     File::InMemory easier.
 
 VERSION
-    version 0.1.0
+    version 0.1.1
 
 SYNOPSIS
       use Dist::Zilla::Util::SimpleMunge qw( munge_file munge_files );
