@@ -5,7 +5,7 @@ package Dist::Zilla::Util::SimpleMunge;
 
 # ABSTRACT: Make munging File::FromCode and File::InMemory easier.
 
-use Moose;
+use Sub::Exporter -setup => { exports => [qw[ munge_file munge_files ]], }
 
 =head1 SYNOPSIS
 
@@ -83,6 +83,56 @@ You can specify the C< $LAZINESS > value explicitly if you want to customize the
 is presently a scalar type get munged as late as possible ( converting the file into a C<FromCode> file ), or make
 something currently backed by code get munged "now", ( converting the file into a C<InMemory> file )
 
+=cut
+
+  sub _native_munge {
+
+  # mostly todo at present to allow native class based overriding of munge behaviour
+  # later.
+  # this specific api is not fixed yet and prone to break
+  my ( $file, $config ) = @_;
+
+  local $@;
+  my $success = 0;
+  eval { $success = $file->munge($config); };
+  return $success if $success;
+  return 0;
+}
+
+sub _fromcode_munge {
+  my ( $file, $config ) = @_;
+  if ( defined $config->{lazy} and $config->{lazy} == 0 ) {
+    die "De-Lazifying a from-code file is not yet implemented";
+  }
+  my $coderef = $file->code();
+  $file->code(
+    sub {
+      return $config->{via}->( $file, $coderef->($file) );
+    }
+  );
+  return 1;
+}
+
+sub _scalar_munge {
+  my ( $file, $config ) = @_;
+  if ( defined $config->{lazy} and $config->{lazy} == 1 ) {
+    die "Forced upgrade from scalar to coderef not yet implemented";
+  }
+  $file->content( $config->{via}->( $file, $file->content ) );
+  return 1;
+}
+
+sub munge_file {
+  my ( $file, $config ) = @_;
+  if ( $file->can('munge') && ( my $success = _native_munge( $file, $config ) ) ) {
+    return $success;
+  }
+  if ( $file->can('code') ) {
+    return _fromcode_munge( $file, $config );
+  }
+  return _scalar_munge( $file, $config );
+}
+
 =func munge_files
 
 This is mostly a convenience utility for munging a lot of files without having to hand-code the looping logic.
@@ -115,6 +165,14 @@ An C<ArrayRef> of L</$FILE>
 =back
 
 =cut
+
+sub munge_files {
+  my ( $array, $config ) = @_;
+  for my $file ( @{$array} ) {
+    return unless munge_file( $file, $config );
+  }
+  return 1;
+}
 
 __PACKAGE__->meta->make_immutable;
 no Moose;
