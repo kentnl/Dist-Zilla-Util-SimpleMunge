@@ -1,6 +1,8 @@
 Release history for Dist-Zilla-Util-FileMunge-Simple
 
 {{$NEXT}}
+
+0.1.2 2011-10-07T18:44:02Z
  - First non-trial release now demonstratably able to do 99% of its
    intended task.
 
