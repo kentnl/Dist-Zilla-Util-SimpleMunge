@@ -6,7 +6,7 @@ BEGIN {
   $Dist::Zilla::Util::SimpleMunge::AUTHORITY = 'cpan:KENTNL';
 }
 {
-  $Dist::Zilla::Util::SimpleMunge::VERSION = '0.1.2';
+  $Dist::Zilla::Util::SimpleMunge::VERSION = '0.2.0';
 }
 
 # ABSTRACT: Make munging File::FromCode and File::InMemory easier.
@@ -18,11 +18,15 @@ use Sub::Exporter -setup => { exports => [qw[ munge_file munge_files ]], };
 sub _fromcode_munge {
   my ( $file, $config ) = @_;
   if ( defined $config->{lazy} and $config->{lazy} == 0 ) {
-    __PACKAGE__->_error(
-      message => 'De-Lazifying a from-code file is not yet implemented',
-      id      => 'code_munge_no_downgrade',
-      tags    => [qw( downgrade fromcode toscalar nonlazy )],
-    );
+
+    # This is a little bit nasty, but can you suggest a better way?
+    # TODO
+    my $content = $file->content();
+    delete $file->{code};
+    require Dist::Zilla::File::InMemory;
+    bless $file, 'Dist::Zilla::File::InMemory';
+    $file->content( $config->{via}->( $file, $content ) );
+    return 1;
   }
   my $coderef = $file->code();
   $file->code(
@@ -36,18 +40,101 @@ sub _fromcode_munge {
 sub _scalar_munge {
   my ( $file, $config ) = @_;
   if ( defined $config->{lazy} and $config->{lazy} == 1 ) {
-    __PACKAGE__->_error(
-      message => 'Forced upgrade from scalar to coderef not yet implemented',
-      id      => 'scalar_munge_no_upgrade',
-      tags    => [qw( upgrade scalar tocoderef lazy )],
+
+    # This is a little bit nasty, but can you suggest a better way?
+    # TODO
+    my $content = delete $file->{content};
+    require Dist::Zilla::File::FromCode;
+    bless $file, 'Dist::Zilla::File::FromCode';
+    $file->code(
+      sub {
+        return $config->{via}->( $file, $content );
+      }
     );
+    return 1;
   }
   $file->content( $config->{via}->( $file, $file->content ) );
   return 1;
 }
 
 sub munge_file {
-  my ( $file, $config ) = @_;
+  my (@all) = @_;
+  my ( $file, $config, @rest ) = @all;
+
+  if (@rest) {
+    __PACKAGE__->_error(
+      ## no critic (RequireInterpolationOfMetachars)
+      message => q[munge_file only accepts 2 parameters, $FILE and \%CONFIG],
+      payload => {
+        parameters => \@all,
+        errors     => \@rest,
+        understood => {
+          qw( $file )   => $file,
+          qw( $config ) => $config,
+        },
+      },
+      tags => [qw( parameters excess munge_file )],
+      id   => 'munge_file_params_excess',
+    );
+  }
+
+  if ( not $file or not $file->can('content') ) {
+    __PACKAGE__->_error(
+      message => 'munge_file must be passed a Dist::Zilla File or a compatible object for parameter 0',
+      payload => {
+        parameter_no => 0,
+        expects      => [qw[ defined ->can(content) ]],
+        got          => $file,
+      },
+      id   => 'munge_file_param_file_bad',
+      tags => [qw( parameters file bad mismatch invalid )],
+    );
+  }
+
+  if ( not ref $config or not ref $config eq 'HASH' ) {
+    __PACKAGE__->_error(
+      message => 'munge_file must be passed a HashReference for parameter 1',
+      payload => {
+        parameter_no => 1,
+        expects      => [qw[ defined ref Hash ]],
+        got          => $file,
+      },
+      id   => 'munge_file_param_config_bad',
+      tags => [qw( parameters config bad mismatch invalid )],
+    );
+  }
+
+  if ( not exists $config->{via} or not defined $config->{via} or not ref $config->{via} eq 'CODE' ) {
+    __PACKAGE__->_error(
+      message => 'munge_file must be passed a subroutine in the configuration hash as \'via\'',
+      payload => {
+        parameter_name => 'via',
+        expects        => [qw[ exists defined ref Code ]],
+        got            => $config->{via},
+      },
+      id   => 'munge_file_config_via_bad',
+      tags => [qw( parameters config via bad mismatch invalid )],
+    );
+  }
+
+  if (
+    exists $config->{lazy}
+    and not( ( not defined $config->{lazy} )
+      or ( $config->{lazy} == 0 )
+      or ( $config->{lazy} == 1 ) )
+    )
+  {
+    __PACKAGE__->_error(
+      message => 'munge_file configuration value \'lazy\' must be un-set, undef, 0 or 1',
+      payload => {
+        parameter_name => 'lazy',
+        expects_one    => [qw[ unset undef 0 1 ]],
+        got            => $config->{lazy},
+      },
+      id   => 'munge_file_config_lazy_bad',
+      tags => [qw( parameters config lazy bad mismatch invalid )],
+    );
+  }
 
   # This codeblock exists for permitting one or more forms of "native" munging.
   # Presently undocumented as the underlying support is still non-existent.
@@ -94,7 +181,7 @@ sub munge_files {
 sub _error {
   my ( $self, %config ) = @_;
   require Carp;
-  return Carp::carp( $config{message} );
+  return Carp::croak( $config{message} );
 }
 
 1;
@@ -108,7 +195,7 @@ Dist::Zilla::Util::SimpleMunge - Make munging File::FromCode and File::InMemory 
 
 =head1 VERSION
 
-version 0.1.2
+version 0.2.0
 
 =head1 SYNOPSIS
 

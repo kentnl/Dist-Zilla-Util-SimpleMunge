@@ -1,5 +1,14 @@
 Release history for Dist-Zilla-Util-FileMunge-Simple
 
+0.2.0 2011-10-09T06:46:42Z
+ [Features]
+ - Exhaustive error reporting data and input validation.
+   ( 0.1.2-source-3-g45a8173 )
+ - Added type-coercion-in-munge support. ( 0.1.2-source-2-g23ded3 )
+
+ [Tests]
+ - Added test for type-coercion-in-munge ( 0.1.2-source-2-g23ded3 )
+
 0.1.2 2011-10-07T18:44:02Z
  - First non-trial release now demonstratably able to do 99% of its
    intended task.
