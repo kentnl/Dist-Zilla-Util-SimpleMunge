@@ -88,11 +88,13 @@ something currently backed by code get munged "now", ( converting the file into 
 sub _fromcode_munge {
   my ( $file, $config ) = @_;
   if ( defined $config->{lazy} and $config->{lazy} == 0 ) {
-    __PACKAGE__->_error(
-      message => 'De-Lazifying a from-code file is not yet implemented',
-      id      => 'code_munge_no_downgrade',
-      tags    => [qw( downgrade fromcode toscalar nonlazy )],
-    );
+    # This is a little bit nasty, but can you suggest a better way?
+    my $content = $file->content();
+    delete $file->{code};
+    require Dist::Zilla::File::InMemory;
+    bless $file, 'Dist::Zilla::File::InMemory';
+    $file->content( $config->{via}->( $file, $content ) );
+    return 1;
   }
   my $coderef = $file->code();
   $file->code(
@@ -106,11 +108,18 @@ sub _fromcode_munge {
 sub _scalar_munge {
   my ( $file, $config ) = @_;
   if ( defined $config->{lazy} and $config->{lazy} == 1 ) {
-    __PACKAGE__->_error(
-      message => 'Forced upgrade from scalar to coderef not yet implemented',
-      id      => 'scalar_munge_no_upgrade',
-      tags    => [qw( upgrade scalar tocoderef lazy )],
+
+    # This is a little bit nasty, but can you suggest a better way?
+    # TODO
+    my $content = delete $file->{content};
+    require Dist::Zilla::File::FromCode;
+    bless $file, 'Dist::Zilla::File::FromCode';
+    $file->code(
+      sub {
+        return $config->{via}->( $file, $content );
+      }
     );
+    return 1;
   }
   $file->content( $config->{via}->( $file, $file->content ) );
   return 1;
@@ -196,7 +205,7 @@ sub munge_files {
 sub _error {
   my ( $self, %config ) = @_;
   require Carp;
-  return Carp::carp( $config{message} );
+  return Carp::croak( $config{message} );
 }
 
 1;
