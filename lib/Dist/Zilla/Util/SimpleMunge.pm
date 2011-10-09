@@ -128,17 +128,19 @@ sub _scalar_munge {
 }
 
 sub munge_file {
-  my ( $file, $config, @rest ) = @_;
+  my (@all) = @_;
+  my ( $file, $config, @rest ) = @all;
 
   if (@rest) {
     __PACKAGE__->_error(
-      message => 'munge_file only accepts 2 parameters, $FILE and \%CONFIG',
+      ## no critic (RequireInterpolationOfMetachars)
+      message => q[munge_file only accepts 2 parameters, $FILE and \%CONFIG],
       payload => {
-        parameters => \@_,
+        parameters => \@all,
         errors     => \@rest,
         understood => {
-          '$file'   => $file,
-          '$config' => $config,
+          qw( $file )   => $file,
+          qw( $config ) => $config,
         },
       },
       tags => [qw( parameters excess munge_file )],
