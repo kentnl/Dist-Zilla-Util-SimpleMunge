@@ -1,6 +1,8 @@
 Release history for Dist-Zilla-Util-FileMunge-Simple
 
 {{$NEXT}}
+
+0.2.0 2011-10-09T06:46:42Z
  [Features]
  - Exhaustive error reporting data and input validation.
    ( 0.1.2-source-3-g45a8173 )
