@@ -88,7 +88,9 @@ something currently backed by code get munged "now", ( converting the file into 
 sub _fromcode_munge {
   my ( $file, $config ) = @_;
   if ( defined $config->{lazy} and $config->{lazy} == 0 ) {
+
     # This is a little bit nasty, but can you suggest a better way?
+    # TODO
     my $content = $file->content();
     delete $file->{code};
     require Dist::Zilla::File::InMemory;
@@ -126,7 +128,81 @@ sub _scalar_munge {
 }
 
 sub munge_file {
-  my ( $file, $config ) = @_;
+  my ( $file, $config, @rest ) = @_;
+
+  if (@rest) {
+    __PACKAGE__->_error(
+      message => 'munge_file only accepts 2 parameters, $FILE and \%CONFIG',
+      payload => {
+        parameters => \@_,
+        errors     => \@rest,
+        understood => {
+          '$file'   => $file,
+          '$config' => $config,
+        },
+      },
+      tags => [qw( parameters excess munge_file )],
+      id   => 'munge_file_params_excess',
+    );
+  }
+
+  if ( not $file or not $file->can('content') ) {
+    __PACKAGE__->_error(
+      message => 'munge_file must be passed a Dist::Zilla File or a compatible object for parameter 0',
+      payload => {
+        parameter_no => 0,
+        expects      => [qw[ defined ->can(content) ]],
+        got          => $file,
+      },
+      id   => 'munge_file_param_file_bad',
+      tags => [qw( parameters file bad mismatch invalid )],
+    );
+  }
+
+  if ( not ref $config or not ref $config eq 'HASH' ) {
+    __PACKAGE__->_error(
+      message => 'munge_file must be passed a HashReference for parameter 1',
+      payload => {
+        parameter_no => 1,
+        expects      => [qw[ defined ref Hash ]],
+        got          => $file,
+      },
+      id   => 'munge_file_param_config_bad',
+      tags => [qw( parameters config bad mismatch invalid )],
+    );
+  }
+
+  if ( not exists $config->{via} or not defined $config->{via} or not ref $config->{via} eq 'CODE' ) {
+    __PACKAGE__->_error(
+      message => 'munge_file must be passed a subroutine in the configuration hash as \'via\'',
+      payload => {
+        parameter_name => 'via',
+        expects        => [qw[ exists defined ref Code ]],
+        got            => $config->{via},
+      },
+      id   => 'munge_file_config_via_bad',
+      tags => [qw( parameters config via bad mismatch invalid )],
+    );
+  }
+
+  if (
+    exists $config->{lazy}
+    and not( ( not defined $config->{lazy} )
+      or ( $config->{lazy} == 0 )
+      or ( $config->{lazy} == 1 ) )
+    )
+  {
+    __PACKAGE__->_error(
+      message => 'munge_file configuration value \'lazy\' must be un-set, undef, 0 or 1',
+      payload => {
+        parameter_name => 'lazy',
+        expects_one    => [qw[ unset undef 0 1 ]],
+        got            => $config->{lazy},
+      },
+      id   => 'munge_file_config_lazy_bad',
+      tags => [qw( parameters config lazy bad mismatch invalid )],
+    );
+  }
 
   # This codeblock exists for permitting one or more forms of "native" munging.
   # Presently undocumented as the underlying support is still non-existent.
