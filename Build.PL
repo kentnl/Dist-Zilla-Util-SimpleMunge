@@ -20,7 +20,7 @@ my %module_build_args = (
     "Kent Fredric <kentnl\@cpan.org>"
   ],
   "dist_name" => "Dist-Zilla-Util-SimpleMunge",
-  "dist_version" => "0.2.0",
+  "dist_version" => "0.2.1",
   "license" => "perl",
   "module_name" => "Dist::Zilla::Util::SimpleMunge",
   "recommends" => {},
@@ -30,6 +30,7 @@ my %module_build_args = (
     "Dist::Zilla::File::FromCode" => 0,
     "Dist::Zilla::File::InMemory" => 0,
     "Sub::Exporter" => 0,
+    "perl" => "5.006",
     "strict" => 0,
     "warnings" => 0
   },
