@@ -1,6 +1,8 @@
 Release history for Dist-Zilla-Util-FileMunge-Simple
 
 {{$NEXT}}
+
+0.2.1 2012-05-09T07:58:41Z
  - Maintenance Release.
 
  [Dependencies::Changed]
