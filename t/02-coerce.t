@@ -78,7 +78,7 @@ munge_file(
       return $content;
     },
     lazy => 1,
-  }, 
+  },
 );
 
 is( $v,                  1,                 'from_code->static->code doesnt generate from source' );
