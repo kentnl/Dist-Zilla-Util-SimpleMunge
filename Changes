@@ -1,0 +1,63 @@
+Release history for Dist-Zilla-Util-FileMunge-Simple
+
+0.2.2 2013-05-15T15:16:22Z
+
+0.2.1 2012-05-09T07:58:41Z
+ - Maintenance Release.
+
+ [Dependencies::Added / runtime requires]
+ - perl 5.006
+
+ [Dependencies::Changed / develop recommends]
+ - Dist::Zilla::PluginBundle::Author::KENTNL::Lite 0.01009803 → v1.3.0
+
+ [Dependencies::Changed / develop suggests]
+ - Dist::Zilla::PluginBundle::Author::KENTNL v1.0.0 → v1.3.0
+
+ [Packaging]
+ - Update LICENSE ( Year, Address , Indent )
+
+ [Tests]
+ - add minimum version test.
+
+0.2.0 2011-10-09T06:46:42Z
+ [Dependencies::Added / runtime requires]
+ - Dist::Zilla::File::FromCode
+ - Dist::Zilla::File::InMemory
+
+ [Dependencies::Removed / test requires]
+ - Dist::Zilla::File::FromCode
+ - Dist::Zilla::File::InMemory
+
+ [Features]
+ - Exhaustive error reporting data and input validation.
+   ( 0.1.2-source-3-g45a8173 )
+ - Added type-coercion-in-munge support. ( 0.1.2-source-2-g23ded3 )
+
+ [Tests]
+ - Added test for type-coercion-in-munge ( 0.1.2-source-2-g23ded3 )
+
+0.1.2 2011-10-07T18:44:02Z
+ - First non-trial release now demonstratably able to do 99% of its
+   intended task.
+
+ [Dependencies::Added / test requires]
+ - Dist::Zilla::File::FromCode
+ - Dist::Zilla::File::InMemory
+
+ [Tests]
+ - Now tests the core munge behaviour via munge_file.
+   ( 0.1.1-source-2-g8afd9ef )
+
+0.1.1 2011-10-07T17:21:53Z
+ [Internals]
+ - Rehash native munging interface to be more flexible, optional, and
+   extendable. ( 0.1.0-source-2-gd1911aa )
+
+ [Packaging]
+ - Try out not-yet-released patches to the Dzil Twitter Plugin for
+   supporting -TRIAL
+
+0.1.0 2011-10-07T05:33:55Z
+ - First version, Proof of Concept, but not yet feature complete.
+
