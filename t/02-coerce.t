@@ -81,14 +81,14 @@ munge_file(
   },
 );
 
-is( $v,                  1,                 'from_code->static->code doesnt generate from source' );
-is( $x,                  0,                 'from_code->static->code doesnt do last munge untill evaluated' );
+is( $v, 1, 'from_code->static->code doesnt generate from source' );
+is( $x, 0, 'from_code->static->code doesnt do last munge untill evaluated' );
 
-is( $in_memory->content, 'Second Value',    'static->code->static content has been re-munged properly' );
+is( $in_memory->content, 'Second Value',      'static->code->static content has been re-munged properly' );
 is( $from_code->content, 'munged_level2 0 1', 'code->static->code has been re-munged properly x1' );
 is( $from_code->content, 'munged_level2 1 1', 'code->static->code has been re-munged properly x2' );
-is( $v,                  1,                 'code->static->code doesnt remunge old munges' );
-is( $x,                  2,                 'code->static->code remunges new munges' );
+is( $v,                  1,                   'code->static->code doesnt remunge old munges' );
+is( $x,                  2,                   'code->static->code remunges new munges' );
 
 done_testing;
 
