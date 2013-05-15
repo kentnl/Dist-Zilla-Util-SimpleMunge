@@ -1,16 +1,49 @@
 Release history for Dist-Zilla-Util-FileMunge-Simple
 
+0.2.2 2013-05-15T15:32:05Z
+ - Minor Maintenance release.
+
+ [Dependencies::Added / develop requires]
+ - Pod::Coverage::TrustPod
+ - Test::CPAN::Changes 0.19
+ - Test::CPAN::Meta
+ - Test::Pod 1.41
+ - Test::Pod::Coverage 1.08
+ - version 0.9901
+
+ [Dependencies::Changed / build requires]
+ - Module::Build 0.3601 → 0.4005
+
+ [Dependencies::Changed / configure requires]
+ - Module::Build 0.3601 → 0.4005
+
+ [Dependencies::Changed / develop suggests]
+ - Dist::Zilla::PluginBundle::Author::KENTNL v1.3.0 → v1.7.3
+
+ [Dependencies::Changed / test requires]
+ - Test::More 0.88 → 0.98
+
+ [Documentation]
+ - Add README.mkdn to src tree.
+ - Update Copyright Year.
+
+ [Meta]
+ - Bug tracker to github issues.
+
+ [Packaging]
+ - Use MB 0.4004 test_requires
+
 0.2.1 2012-05-09T07:58:41Z
  - Maintenance Release.
 
- [Dependencies::Changed]
- - develop recommends : Dist::Zilla::PluginBundle::Author::KENTNL::Lite
-   0.01009803 -> v1.3.0
- - develop suggests : Dist::Zilla::PluginBundle::Author::KENTNL
-   v1.0.0 -> v1.3.0
+ [Dependencies::Added / runtime requires]
+ - perl 5.006
 
- [Dependencies::New]
- - runtime requires : perl 5.006
+ [Dependencies::Changed / develop recommends]
+ - Dist::Zilla::PluginBundle::Author::KENTNL::Lite 0.01009803 → v1.3.0
+
+ [Dependencies::Changed / develop suggests]
+ - Dist::Zilla::PluginBundle::Author::KENTNL v1.0.0 → v1.3.0
 
  [Packaging]
  - Update LICENSE ( Year, Address , Indent )
@@ -19,6 +52,14 @@ Release history for Dist-Zilla-Util-FileMunge-Simple
  - add minimum version test.
 
 0.2.0 2011-10-09T06:46:42Z
+ [Dependencies::Added / runtime requires]
+ - Dist::Zilla::File::FromCode
+ - Dist::Zilla::File::InMemory
+
+ [Dependencies::Removed / test requires]
+ - Dist::Zilla::File::FromCode
+ - Dist::Zilla::File::InMemory
+
  [Features]
  - Exhaustive error reporting data and input validation.
    ( 0.1.2-source-3-g45a8173 )
@@ -30,6 +71,10 @@ Release history for Dist-Zilla-Util-FileMunge-Simple
 0.1.2 2011-10-07T18:44:02Z
  - First non-trial release now demonstratably able to do 99% of its
    intended task.
+
+ [Dependencies::Added / test requires]
+ - Dist::Zilla::File::FromCode
+ - Dist::Zilla::File::InMemory
 
  [Tests]
  - Now tests the core munge behaviour via munge_file.
