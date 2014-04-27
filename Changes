@@ -6,20 +6,28 @@ Release history for Dist-Zilla-Util-FileMunge-Simple
  - Only a few minor packaging backcompat risks for downstream $VENDORs who
    work by HAND.
 
- [01 New Functions]
+ [01 DZil 5 Encoding Support]
+ - Dist::Zilla >= 5.0 is now mandatory
+ - Callback functions now pass an "encoding" value ( either 'text' or
+   'bytes' )
+ - This is mostly a pragmatic choice, if it can be decoded, you probably
+   want to work with it decoded
+ - Otherwise you'll probably want to work with it as bytes.
+
+ [02 New Functions]
  - A whole bunch of new functions have been added which are more DWIM and
    trying smarter to advoid the horrible black magic. - auto_munge_file now
    the most recommended approach, but supports no laziness overiding.
 
- [02 Less Black Magic]
+ [03 Less Black Magic]
  - There's still a rebless trick or two to cast the refs in-place, but they
    should be more stable and less prone to initialization-based errors.
 
- [03 New Tooling]
+ [04 New Tooling]
  - ExtUtils::MakeMaker has taken precedence over Module::Build
  - Dependencies on latest versions are now only recommended, not required.
 
- [04 New Verson Scheme]
+ [05 New Verson Scheme]
  - 0.y.z -> 1.yyyzzz
  - This is the primary reason for the 1.x on the box.
 
