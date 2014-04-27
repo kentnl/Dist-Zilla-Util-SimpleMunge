@@ -1,6 +1,6 @@
 Release history for Dist-Zilla-Util-FileMunge-Simple
 
-1.000000 2014-04-27T10:52:04Z
+1.000000 2014-04-27T10:52:47Z
  [00 Major]
  - This is a major set of changes, but mostly forwards compatible.
  - Only a few minor packaging backcompat risks for downstream $VENDORs who
