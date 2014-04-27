@@ -5,6 +5,8 @@ package Dist::Zilla::Util::SimpleMunge;
 $Dist::Zilla::Util::SimpleMunge::VERSION = '0.002003';
 # ABSTRACT: Make munging File::FromCode and File::InMemory easier.
 
+our $AUTHORITY = 'cpan:KENTNL'; # AUTHORITY
+
 use Sub::Exporter -setup => { exports => [qw[ munge_file munge_files ]], };
 
 
