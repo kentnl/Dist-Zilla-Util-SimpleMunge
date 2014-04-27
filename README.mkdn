@@ -4,7 +4,7 @@ Dist::Zilla::Util::SimpleMunge - Make munging File::FromCode and File::InMemory 
 
 # VERSION
 
-version 0.002003
+version 1.000000
 
 # SYNOPSIS
 
