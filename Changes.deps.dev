@@ -1,4 +1,6 @@
-1.000000
+1.000001
+
+1.000000 2014-04-27T11:25:29Z
  [Added / develop requires]
  - Dist::Zilla::Plugin::Authority 1.006
  - Dist::Zilla::Plugin::AutoPrereqs

@@ -1,6 +1,8 @@
 Release history for Dist-Zilla-Util-FileMunge-Simple
 
 {{$NEXT}}
+ [Bugfix]
+ - Minor documentation bugs with formatting.
 
 1.000000 2014-04-27T11:25:29Z
  [00 Major]
