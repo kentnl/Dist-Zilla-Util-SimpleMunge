@@ -3,7 +3,7 @@ NAME
     File::InMemory easier.
 
 VERSION
-    version 1.000000
+    version 1.000001
 
 SYNOPSIS
       use Dist::Zilla::Util::SimpleMunge qw( auto_munge_file );
@@ -107,13 +107,13 @@ FUNCTIONS
           return $new_content # must still be in form $encoding
       });
 
-  c<to_InMemory>
+  "to_InMemory"
     Given a "FromCode", return an equivalent "InMemory" file, flattening the
     callback in the process into simply a string.
 
       my $in_memory = to_InMemory( $from_code );
 
-  c<to_FromCode>
+  "to_FromCode"
     Given a "InMemory" or "OnDisk", return an equivalent "FromCode" file,
     converting the content into a callback that yields that content.
 
@@ -204,7 +204,7 @@ FUNCTIONS
 
       inplace_replace( $file, to_InMemory($file) );
 
-  <munge_file>
+  "munge_file"
       # munge_file ( $FILE , \%CONFIGURATION )
 
       munge_file(
