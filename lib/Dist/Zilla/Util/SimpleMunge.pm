@@ -459,14 +459,26 @@ sub _scalar_munge {
   return 1;
 }
 
+my $ex_munge_file_params_excess = {
+  tags => [qw( parameters excess munge_file )],
+  id   => 'munge_file_params_excess',
+  ## no critic (RequireInterpolationOfMetachars)
+  message => q[munge_file only accepts 2 parameters, $FILE and \%CONFIG],
+};
+my $ex_munge_file_param_file_bad = {
+  id   => 'munge_file_param_file_bad',
+  tags => [qw( parameters file bad mismatch invalid )],
+  ## no critic (ValuesAndExpressions::RestrictLongStrings)
+  message => 'munge_file must be passed a Dist::Zilla File or a compatible object for parameter 0',
+};
+
 sub munge_file {
   my (@all) = @_;
   my ( $file, $config, @rest ) = @all;
 
   if (@rest) {
     __PACKAGE__->_error(
-      ## no critic (RequireInterpolationOfMetachars)
-      message => q[munge_file only accepts 2 parameters, $FILE and \%CONFIG],
+      %{$ex_munge_file_params_excess},
       payload => {
         parameters => \@all,
         errors     => \@rest,
@@ -475,21 +487,17 @@ sub munge_file {
           qw( $config ) => $config,
         },
       },
-      tags => [qw( parameters excess munge_file )],
-      id   => 'munge_file_params_excess',
     );
   }
 
   if ( not $file or not $file->can('content') ) {
     __PACKAGE__->_error(
-      message => 'munge_file must be passed a Dist::Zilla File or a compatible object for parameter 0',
+      %{$ex_munge_file_param_file_bad},
       payload => {
         parameter_no => 0,
         expects      => [qw[ defined ->can(content) ]],
         got          => $file,
       },
-      id   => 'munge_file_param_file_bad',
-      tags => [qw( parameters file bad mismatch invalid )],
     );
   }
 
