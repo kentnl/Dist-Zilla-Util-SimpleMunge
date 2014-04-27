@@ -666,7 +666,7 @@ Except when you come to C<CodeRef>s, that all changes.
 
 Which quickly gets messy.
 
-So this module is as simple as I think I can get it without hacking dzil directly.
+So this module is as simple as I think I can get it without hacking Dist::Zilla directly.
 
   auto_munge_file $file, sub {
      my ( $thefile, $content, $encoding ) = @_;
@@ -752,7 +752,7 @@ This munging is applied immediately.
 
 =head2 C<munge_FromCode>
 
-Munge a C<FromCode> object by replacing the coderef with a new one that yeilds the former.
+Munge a C<FromCode> object by replacing the C<CodeRef> with a new one that yields the former.
 
   munge_FromCode( $xfile, sub {
     my ( $file, $content, $encoding ) = @_;

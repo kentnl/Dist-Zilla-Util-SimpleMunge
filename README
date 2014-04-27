@@ -45,8 +45,8 @@ DESCRIPTION
 
     Which quickly gets messy.
 
-    So this module is as simple as I think I can get it without hacking dzil
-    directly.
+    So this module is as simple as I think I can get it without hacking
+    Dist::Zilla directly.
 
       auto_munge_file $file, sub {
          my ( $thefile, $content, $encoding ) = @_;
@@ -131,8 +131,8 @@ FUNCTIONS
     This munging is applied immediately.
 
   "munge_FromCode"
-    Munge a "FromCode" object by replacing the coderef with a new one that
-    yeilds the former.
+    Munge a "FromCode" object by replacing the "CodeRef" with a new one that
+    yields the former.
 
       munge_FromCode( $xfile, sub {
         my ( $file, $content, $encoding ) = @_;
