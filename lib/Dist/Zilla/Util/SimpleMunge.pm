@@ -1,5 +1,7 @@
+use 5.008;    # utf8
 use strict;
 use warnings;
+use utf8;
 
 package Dist::Zilla::Util::SimpleMunge;
 $Dist::Zilla::Util::SimpleMunge::VERSION = '0.002003';
@@ -684,19 +686,19 @@ The callback will be called as appropriate.
 
 =back
 
-And this is the most useful and straight forward interface that doesn't invoke any weird reblessing magic.
+And this is the most useful and straight forward interface that doesn't invoke any weird re-blessing magic.
 
 =head2 ADVANCED USAGE
 
-There are a few less simple utilities that may also prove usefull.
+There are a few less simple utilities that may also prove useful.
 
 =over 4
 
-=item * L<< C<munge_InMemory>|/munge_InMemory >> - trusts you know what you're dealing with and munges an InMemory instance via the callback.
+=item * L<< C<munge_InMemory>|/munge_InMemory >> - trusts you know what you're dealing with and munges an C<InMemory> instance via the callback.
 
-=item * L<< C<munge_FromCode>|/munge_FromCode >> - trusts you when you say you have a coderef, and munges with coderef chaining.
+=item * L<< C<munge_FromCode>|/munge_FromCode >> - trusts you when you say you have a C<FromCode>, and munges with C<CodeRef> chaining.
 
-=item * L<< C<inplace_replace>|/inplace_replace >> - A bit of magic to replace an object in-place without modifying any containers that point to it and without changing the refaddr.
+=item * L<< C<inplace_replace>|/inplace_replace >> - A bit of magic to replace an object in-place without modifying any containers that point to it and without changing the reference address.
 
 =item * L<< C<to_InMemory>|/to_InMemory >> - returns a C<FromCode> represented as a new C<InMemory> object.
 
@@ -706,7 +708,7 @@ There are a few less simple utilities that may also prove usefull.
 
 =item * L<< C<inplace_to_FromCode>|/inplace_to_FromCode >> - like C<to_FromCode>, but replaces the object in-place.
 
-=item * L<< C<munge_file>|/munge_file >> - combines all of the above behaviours based on configuration values.
+=item * L<< C<munge_file>|/munge_file >> - combines all of the above behaviors based on configuration values.
 
 =item * L<< C<munge_files>|/munge_files >> - applies a single configuration and callback to a collection of files.
 
@@ -732,7 +734,7 @@ in the process into simply a string.
 
 =head2 c<to_FromCode>
 
-Given a C<InMemory> or C<OnDisk>, return an equivalent C<FromCode> file, converting the content into a callback that yeilds that content.
+Given a C<InMemory> or C<OnDisk>, return an equivalent C<FromCode> file, converting the content into a callback that yields that content.
 
   my $from_code = to_FromCode( $in_memory_or_from_disk );
 
@@ -803,7 +805,7 @@ This should result in:
 
   array  = ADDR=0x016 = data = [ 0x015 ]
 
-Yes, this is rather nasty to do this, but no good alternatives atm =).
+Yes, this is rather nasty to do this, but no good alternatives at the moment :).
 
   inplace_replace( $original_object, $replacement_object );
 
@@ -876,7 +878,7 @@ munges the file content immediately.
 For things backed by code, such as L<< C<::File::FromCode> |Dist::Zilla::File::FromCode >>, munging defaults to C< $LAZINESS = 1 >, where the
 actual munging sub you specify is executed as late as possible.
 
-You can specify the C< $LAZINESS > value explicitly if you want to customize the behaviour, i.e.: Make something that
+You can specify the C< $LAZINESS > value explicitly if you want to customize the behavior, i.e.: Make something that
 is presently a scalar type get munged as late as possible ( converting the file into a C<FromCode> file ), or make
 something currently backed by code get munged "now", ( converting the file into a C<InMemory> file )
 

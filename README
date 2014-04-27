@@ -65,20 +65,20 @@ DESCRIPTION
         code will be evaluated when the file itself is written out.
 
     And this is the most useful and straight forward interface that doesn't
-    invoke any weird reblessing magic.
+    invoke any weird re-blessing magic.
 
   ADVANCED USAGE
-    There are a few less simple utilities that may also prove usefull.
+    There are a few less simple utilities that may also prove useful.
 
     *   "munge_InMemory" - trusts you know what you're dealing with and
-        munges an InMemory instance via the callback.
+        munges an "InMemory" instance via the callback.
 
-    *   "munge_FromCode" - trusts you when you say you have a coderef, and
-        munges with coderef chaining.
+    *   "munge_FromCode" - trusts you when you say you have a "FromCode",
+        and munges with "CodeRef" chaining.
 
     *   "inplace_replace" - A bit of magic to replace an object in-place
         without modifying any containers that point to it and without
-        changing the refaddr.
+        changing the reference address.
 
     *   "to_InMemory" - returns a "FromCode" represented as a new "InMemory"
         object.
@@ -92,7 +92,7 @@ DESCRIPTION
     *   "inplace_to_FromCode" - like "to_FromCode", but replaces the object
         in-place.
 
-    *   "munge_file" - combines all of the above behaviours based on
+    *   "munge_file" - combines all of the above behaviors based on
         configuration values.
 
     *   "munge_files" - applies a single configuration and callback to a
@@ -115,7 +115,7 @@ FUNCTIONS
 
   c<to_FromCode>
     Given a "InMemory" or "OnDisk", return an equivalent "FromCode" file,
-    converting the content into a callback that yeilds that content.
+    converting the content into a callback that yields that content.
 
       my $from_code = to_FromCode( $in_memory_or_from_disk );
 
@@ -185,7 +185,8 @@ FUNCTIONS
 
       array  = ADDR=0x016 = data = [ 0x015 ]
 
-    Yes, this is rather nasty to do this, but no good alternatives atm =).
+    Yes, this is rather nasty to do this, but no good alternatives at the
+    moment :).
 
       inplace_replace( $original_object, $replacement_object );
 
@@ -255,7 +256,7 @@ FUNCTIONS
     executed as late as possible.
 
     You can specify the $LAZINESS value explicitly if you want to customize
-    the behaviour, i.e.: Make something that is presently a scalar type get
+    the behavior, i.e.: Make something that is presently a scalar type get
     munged as late as possible ( converting the file into a "FromCode" file
     ), or make something currently backed by code get munged "now", (
     converting the file into a "InMemory" file )
