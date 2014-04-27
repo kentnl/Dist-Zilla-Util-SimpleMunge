@@ -1,61 +1,476 @@
+use 5.008;    # utf8
 use strict;
 use warnings;
+use utf8;
 
 package Dist::Zilla::Util::SimpleMunge;
-BEGIN {
-  $Dist::Zilla::Util::SimpleMunge::AUTHORITY = 'cpan:KENTNL';
-}
-{
-  $Dist::Zilla::Util::SimpleMunge::VERSION = '0.2.2';
-}
-
+$Dist::Zilla::Util::SimpleMunge::VERSION = '1.000000';
 # ABSTRACT: Make munging File::FromCode and File::InMemory easier.
 
-use Sub::Exporter -setup => { exports => [qw[ munge_file munge_files ]], };
+our $AUTHORITY = 'cpan:KENTNL'; # AUTHORITY
+
+use Sub::Exporter -setup => { exports =>
+    [qw[ munge_file munge_files to_InMemory to_FromCode munge_InMemory munge_FromCode inplace_replace auto_munge_file ]], };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+my $ex_auto_munge_file_params_excess = {
+  tags => [qw( parameters excess auto_munge_file )],
+  ## no critic (RequireInterpolationOfMetachars)
+  message => q[auto_munge_file only accepts 2 parameters, $FILE and $CALLBACK],
+  id      => 'auto_munge_file_params_excess',
+};
+
+my $ex_auto_munge_file_param_file_bad = {
+  tags => [qw( parameters file bad mismatch invalid )],
+  id   => 'auto_munge_file_param_file_bad',
+  ## no critic (ValuesAndExpressions::RestrictLongStrings)
+  message => 'auto_munge_file must be passed a Dist::Zilla File or a compatible object for parameter 0',
+};
+
+sub auto_munge_file {
+  my (@all) = @_;
+  my ( $file, $callback, @rest ) = @all;
+  if (@rest) {
+    __PACKAGE__->_error(
+      %{$ex_auto_munge_file_params_excess},
+      payload => {
+        parameters => \@all,
+        errors     => \@rest,
+        understood => {
+          qw( $file )     => $file,
+          qw( $callback ) => $callback,
+        },
+      },
+    );
+  }
+  if ( not $file or not $file->can('content') ) {
+    __PACKAGE__->_error(
+      %{$ex_auto_munge_file_param_file_bad},
+      payload => {
+        parameter_no => 0,
+        expects      => [qw[ defined ->can(content) ]],
+        got          => $file,
+      },
+    );
+  }
+  if ( not defined $callback or not 'CODE' eq ref $callback ) {
+    __PACKAGE__->_error(
+      message => 'auto_munge_file must be passed a subroutine as parameter 1',
+      payload => {
+        parameter_no => '1',
+        expects      => [qw[ defined ref Code ]],
+        got          => $callback,
+      },
+      id   => 'auto_munge_file_callback_bad',
+      tags => [qw( parameters config via bad mismatch invalid )],
+    );
+  }
+  if ( $file->can('code') ) {
+    return munge_FromCode( $file, $callback );
+  }
+  return munge_InMemory( $file, $callback );
+
+}
+
+
+
+
+
+
+
+
+
+
+sub to_InMemory {
+  my ($file)   = @_;
+  my $encoding = $file->encoding;
+  my %args     = (
+    name     => $file->name,
+    encoding => $encoding,
+    added_by => $file->added_by,
+    mode     => $file->mode,
+  );
+  if ( 'bytes' eq $encoding ) {
+    $args{encoded_content} = $file->encoded_content;
+  }
+  else {
+    $args{content} = $file->content;
+  }
+  require Dist::Zilla::File::InMemory;
+  return Dist::Zilla::File::InMemory->new(%args);
+}
+
+
+
+
+
+
+
+
+
+sub to_FromCode {
+  my ($file)   = @_;
+  my $encoding = $file->encoding;
+  my %args     = (
+    name     => $file->name,
+    added_by => $file->added_by,
+    mode     => $file->mode,
+  );
+  if ( 'bytes' eq $encoding ) {
+    my $ec = $file->encoded_content;
+    $args{code} = sub { return $ec };
+    $args{code_return_type} = 'bytes';
+  }
+  else {
+    my $c = $file->content;
+    $args{code} = sub { return $c };
+    $args{code_return_type} = 'text';
+  }
+  require Dist::Zilla::File::FromCode;
+  return Dist::Zilla::File::FromCode->new(%args);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+sub munge_InMemory {
+  my ( $file, $coderef ) = @_;
+  if ( 'bytes' eq $file->encoding ) {
+    return $file->encoded_content( $coderef->( $file, $file->content, 'bytes' ) );
+  }
+  $file->content( $coderef->( $file, $file->content, 'text' ) );
+  return 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+sub munge_FromCode {
+  my ( $file, $coderef ) = @_;
+  my $oldcoderef  = $file->code;
+  my $return_type = $file->code_return_type;
+  $file->code(
+    sub {
+      $coderef->( $file, $oldcoderef->(), $return_type );
+    },
+  );
+  return 1;
+}
+
+use Scalar::Util qw(blessed);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# This is a little bit nasty, but can you suggest a better way?
+# TODO
+sub inplace_replace {
+  my ( $orig, $replacement ) = @_;
+  my $newclass = blessed $replacement;
+  for my $oldkey ( keys %{$orig} ) {
+    delete $orig->{$oldkey};
+  }
+  for my $newkey ( keys %{$replacement} ) {
+    $orig->{$newkey} = $replacement->{$newkey};
+  }
+  bless $orig, $newclass;
+  return 1;
+}
+
+
+
+
+
+
+
+
+
+sub inplace_to_FromCode {
+  my ($file) = @_;
+  return inplace_replace( $file, to_FromCode($file) );
+}
+
+
+
+
+
+
+
+
+
+sub inplace_to_InMemory {
+  my ($file) = @_;
+  return inplace_replace( $file, to_InMemory($file) );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 sub _fromcode_munge {
   my ( $file, $config ) = @_;
-  if ( defined $config->{lazy} and $config->{lazy} == 0 ) {
-
-    # This is a little bit nasty, but can you suggest a better way?
-    # TODO
-    my $content = $file->content();
-    delete $file->{code};
-    require Dist::Zilla::File::InMemory;
-    bless $file, 'Dist::Zilla::File::InMemory';
-    $file->content( $config->{via}->( $file, $content ) );
+  if ( defined $config->{lazy} and 0 == $config->{lazy} ) {
+    inplace_to_InMemory($file);
+    munge_InMemory( $file, $config->{via} );
     return 1;
   }
-  my $coderef = $file->code();
-  $file->code(
-    sub {
-      return $config->{via}->( $file, $coderef->($file) );
-    }
-  );
+  munge_FromCode( $file, $config->{via} );
   return 1;
 }
 
 sub _scalar_munge {
   my ( $file, $config ) = @_;
-  if ( defined $config->{lazy} and $config->{lazy} == 1 ) {
-
-    # This is a little bit nasty, but can you suggest a better way?
-    # TODO
-    my $content = delete $file->{content};
-    require Dist::Zilla::File::FromCode;
-    bless $file, 'Dist::Zilla::File::FromCode';
-    $file->code(
-      sub {
-        return $config->{via}->( $file, $content );
-      }
-    );
+  if ( defined $config->{lazy} and 1 == $config->{lazy} ) {
+    inplace_to_FromCode($file);
+    munge_FromCode( $file, $config->{via} );
     return 1;
   }
-  $file->content( $config->{via}->( $file, $file->content ) );
+  munge_InMemory( $file, $config->{via} );
   return 1;
 }
+
+my $ex_munge_file_params_excess = {
+  tags => [qw( parameters excess munge_file )],
+  id   => 'munge_file_params_excess',
+  ## no critic (RequireInterpolationOfMetachars)
+  message => q[munge_file only accepts 2 parameters, $FILE and \%CONFIG],
+};
+my $ex_munge_file_param_file_bad = {
+  id   => 'munge_file_param_file_bad',
+  tags => [qw( parameters file bad mismatch invalid )],
+  ## no critic (ValuesAndExpressions::RestrictLongStrings)
+  message => 'munge_file must be passed a Dist::Zilla File or a compatible object for parameter 0',
+};
 
 sub munge_file {
   my (@all) = @_;
@@ -63,8 +478,7 @@ sub munge_file {
 
   if (@rest) {
     __PACKAGE__->_error(
-      ## no critic (RequireInterpolationOfMetachars)
-      message => q[munge_file only accepts 2 parameters, $FILE and \%CONFIG],
+      %{$ex_munge_file_params_excess},
       payload => {
         parameters => \@all,
         errors     => \@rest,
@@ -73,25 +487,21 @@ sub munge_file {
           qw( $config ) => $config,
         },
       },
-      tags => [qw( parameters excess munge_file )],
-      id   => 'munge_file_params_excess',
     );
   }
 
   if ( not $file or not $file->can('content') ) {
     __PACKAGE__->_error(
-      message => 'munge_file must be passed a Dist::Zilla File or a compatible object for parameter 0',
+      %{$ex_munge_file_param_file_bad},
       payload => {
         parameter_no => 0,
         expects      => [qw[ defined ->can(content) ]],
         got          => $file,
       },
-      id   => 'munge_file_param_file_bad',
-      tags => [qw( parameters file bad mismatch invalid )],
     );
   }
 
-  if ( not ref $config or not ref $config eq 'HASH' ) {
+  if ( not ref $config or not 'HASH' eq ref $config ) {
     __PACKAGE__->_error(
       message => 'munge_file must be passed a HashReference for parameter 1',
       payload => {
@@ -104,7 +514,7 @@ sub munge_file {
     );
   }
 
-  if ( not exists $config->{via} or not defined $config->{via} or not ref $config->{via} eq 'CODE' ) {
+  if ( not exists $config->{via} or not defined $config->{via} or not 'CODE' eq ref $config->{via} ) {
     __PACKAGE__->_error(
       message => 'munge_file must be passed a subroutine in the configuration hash as \'via\'',
       payload => {
@@ -120,8 +530,8 @@ sub munge_file {
   if (
     exists $config->{lazy}
     and not( ( not defined $config->{lazy} )
-      or ( $config->{lazy} == 0 )
-      or ( $config->{lazy} == 1 ) )
+      or ( 0 == $config->{lazy} )
+      or ( 1 == $config->{lazy} ) )
     )
   {
     __PACKAGE__->_error(
@@ -157,7 +567,7 @@ sub munge_file {
   # and everything else is assumed to be in-memory scalars.
   #
   if ( exists $config->{native} and defined $config->{native} ) {
-    if ( $config->{native} eq 'filemungeapi' ) {    # The API as proposed by Kentnl
+    if ( 'filemungeapi' eq $config->{native} ) {    # The API as proposed by Kentnl
       if ( $file->can('munge') ) {
         return $file->munge( $config->{via} );
       }
@@ -170,6 +580,38 @@ sub munge_file {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 sub munge_files {
   my ( $array, $config ) = @_;
   for my $file ( @{$array} ) {
@@ -179,7 +621,7 @@ sub munge_files {
 }
 
 sub _error {
-  my ( $self, %config ) = @_;
+  my ( undef, %config ) = @_;
   require Carp;
   return Carp::croak( $config{message} );
 }
@@ -196,27 +638,210 @@ Dist::Zilla::Util::SimpleMunge - Make munging File::FromCode and File::InMemory 
 
 =head1 VERSION
 
-version 0.2.2
+version 1.000000
 
 =head1 SYNOPSIS
 
-  use Dist::Zilla::Util::SimpleMunge qw( munge_file munge_files );
+  use Dist::Zilla::Util::SimpleMunge qw( auto_munge_file );
   ...;
 
   sub somesub {
     ...;
-    munge_file $file_from_zilla, {
-      via => sub {
-        my ( $file, $content ) = @_;
+
+    next if $file->is_bytes;
+
+    if ( $file->can('code') ) {
+
+    auto_munge_file $file_from_zilla, sub {
+        my ( $file, $content , $encoding ) = @_;
+        return $mangled if $encoding ne 'text'; # bytes or text
         ... mangle $content here ...;
         return $mangled;
-      },
     };
   }
 
+=head1 DESCRIPTION
+
+=head2 NOTE: STOPGAP
+
+This module is mostly a stopgap and a implementation experiment in lieu of something better in Dist::Zilla eventually transpiring.
+
+=head2 BASIC USAGE
+
+Munging files in Dist::Zilla can be a pain.
+
+Its mostly the same:
+
+  $file->content( substr( $file->content, 0, 10 ) ); # etc.
+
+Except when you come to C<CodeRef>s, that all changes.
+
+  my $orig_code = $file->code();
+  $file->code( sub {
+      $file->$orig_code() =~ s/foo/bar/
+  });
+
+Which quickly gets messy.
+
+So this module is as simple as I think I can get it without hacking Dist::Zilla directly.
+
+  auto_munge_file $file, sub {
+     my ( $thefile, $content, $encoding ) = @_;
+  };
+
+The callback will be called as appropriate.
+
+=over 4
+
+=item * C<$content> will contain the content, I<decoded if possible>
+
+=item * C<$encoding> will be either C<text> or C<bytes>, the latter if decoding is not possible.
+
+=item * C<InMemory> will apply the code immediately
+
+=item * C<FromCode> will take your code and create a chained system so your code will be evaluated when the file itself is written out.
+
+=back
+
+And this is the most useful and straight forward interface that doesn't invoke any weird re-blessing magic.
+
+=head2 ADVANCED USAGE
+
+There are a few less simple utilities that may also prove useful.
+
+=over 4
+
+=item * L<< C<munge_InMemory>|/munge_InMemory >> - trusts you know what you're dealing with and munges an C<InMemory> instance via the callback.
+
+=item * L<< C<munge_FromCode>|/munge_FromCode >> - trusts you when you say you have a C<FromCode>, and munges with C<CodeRef> chaining.
+
+=item * L<< C<inplace_replace>|/inplace_replace >> - A bit of magic to replace an object in-place without modifying any containers that point to it and without changing the reference address.
+
+=item * L<< C<to_InMemory>|/to_InMemory >> - returns a C<FromCode> represented as a new C<InMemory> object.
+
+=item * L<< C<to_FromCode>|/to_FromCode >> - returns an C<InMemory> represented as a new C<FromCode> object.
+
+=item * L<< C<inplace_to_InMemory>|/inplace_to_InMemory >> - like C<to_InMemory>, but replaces the object in-place.
+
+=item * L<< C<inplace_to_FromCode>|/inplace_to_FromCode >> - like C<to_FromCode>, but replaces the object in-place.
+
+=item * L<< C<munge_file>|/munge_file >> - combines all of the above behaviors based on configuration values.
+
+=item * L<< C<munge_files>|/munge_files >> - applies a single configuration and callback to a collection of files.
+
+=back
+
 =head1 FUNCTIONS
 
-=head2 munge_file
+=head2 C<auto_munge_file>
+
+  # auto_munge_file ( $FILE, $CODEREF )
+
+  auto_munge_file( $zilla_file, sub {
+      my ( $file, $content, $encoding ) = @_;
+      return $new_content # must still be in form $encoding
+  });
+
+=head2 c<to_InMemory>
+
+Given a C<FromCode>, return an equivalent C<InMemory> file, flattening the callback
+in the process into simply a string.
+
+  my $in_memory = to_InMemory( $from_code );
+
+=head2 c<to_FromCode>
+
+Given a C<InMemory> or C<OnDisk>, return an equivalent C<FromCode> file, converting the content into a callback that yields that content.
+
+  my $from_code = to_FromCode( $in_memory_or_from_disk );
+
+=head2 C<munge_InMemory>
+
+Munge an C<InMemory> ( or similar ) item using a callback.
+
+  munge_InMemory( $xfile, sub {
+    my ( $file, $content, $encoding ) = @_;
+     ...
+    return $content;
+  });
+
+This munging is applied immediately.
+
+=head2 C<munge_FromCode>
+
+Munge a C<FromCode> object by replacing the C<CodeRef> with a new one that yields the former.
+
+  munge_FromCode( $xfile, sub {
+    my ( $file, $content, $encoding ) = @_;
+
+    $content =~ s/foo/bar/;
+
+    return $content;
+  });
+
+Note: this code is equivalent to:
+
+  my $orig_code = $xfile->code;
+  my $encoding  = $xfile->core_return_type;
+  $xfile->code( sub {
+
+    my $content = $xfile->$orig_code();
+
+    $content =~ s/a/b/;
+
+    return $content;
+  });
+
+=head2 C<inplace_replace>
+
+This is a rather nasty way to replace an Object in place without breaking references held on it.
+
+Consider:
+
+  source = ADDR=0x015 = data = { x => y }
+                      = class = Foo
+
+  target = ADDR=0x017 = data = { z => a }
+                      = class = Bar
+
+  array  = ADDR=0x016 = data = [ 0x015 ]
+
+Then:
+
+  delete source->{x}
+  source->{z} = target->{z}
+  bless source, 'Bar'
+
+This should result in:
+
+  source = ADDR=0x015 = data = { z => a }
+                      = class = Bar
+
+  target = ADDR=0x017 = data = { z => a }
+                      = class = Bar
+
+  array  = ADDR=0x016 = data = [ 0x015 ]
+
+Yes, this is rather nasty to do this, but no good alternatives at the moment :).
+
+  inplace_replace( $original_object, $replacement_object );
+
+This will mirror all the keys from C<$replacement_object> to C<$original_object>, and subsequently
+ensure C<$original_object> is C<reblessed> into the class of C<$replacement_object>
+
+=head2 C<inplace_to_FromCode>
+
+Shorthand for
+
+  inplace_replace( $file, to_FromCode($file) );
+
+=head2 C<inplace_to_InMemory>
+
+Shorthand for
+
+  inplace_replace( $file, to_InMemory($file) );
+
+=head2 <munge_file>
 
   # munge_file ( $FILE , \%CONFIGURATION )
 
@@ -270,7 +895,7 @@ munges the file content immediately.
 For things backed by code, such as L<< C<::File::FromCode> |Dist::Zilla::File::FromCode >>, munging defaults to C< $LAZINESS = 1 >, where the
 actual munging sub you specify is executed as late as possible.
 
-You can specify the C< $LAZINESS > value explicitly if you want to customize the behaviour, i.e.: Make something that
+You can specify the C< $LAZINESS > value explicitly if you want to customize the behavior, i.e.: Make something that
 is presently a scalar type get munged as late as possible ( converting the file into a C<FromCode> file ), or make
 something currently backed by code get munged "now", ( converting the file into a C<InMemory> file )
 
@@ -311,7 +936,7 @@ Kent Fredric <kentnl@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2013 by Kent Fredric <kentnl@cpan.org>.
+This software is copyright (c) 2014 by Kent Fredric <kentnl@cpan.org>.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
