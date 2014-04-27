@@ -3,7 +3,7 @@ NAME
     File::InMemory easier.
 
 VERSION
-    version 0.002003
+    version 1.000000
 
 SYNOPSIS
       use Dist::Zilla::Util::SimpleMunge qw( auto_munge_file );
