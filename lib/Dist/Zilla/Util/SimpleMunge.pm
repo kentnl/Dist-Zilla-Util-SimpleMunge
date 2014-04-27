@@ -9,7 +9,8 @@ package Dist::Zilla::Util::SimpleMunge;
 
 # AUTHORITY
 
-use Sub::Exporter -setup => { exports => [qw[ munge_file munge_files ]], };
+use Sub::Exporter -setup => { exports =>
+    [qw[ munge_file munge_files to_InMemory to_FromCode munge_InMemory munge_FromCode inplace_replace auto_munge_file ]], };
 
 =head1 SYNOPSIS
 
@@ -28,6 +29,278 @@ use Sub::Exporter -setup => { exports => [qw[ munge_file munge_files ]], };
   }
 
 =cut
+
+=func C<auto_munge_file>
+
+  # auto_munge_file ( $FILE, $CODEREF )
+
+  auto_munge_file( $zilla_file, sub {
+      my ( $file, $content, $encoding ) = @_;
+      return $new_content # must still be in form $encoding
+  });
+
+=cut
+
+my $ex_auto_munge_file_params_excess = {
+  tags => [qw( parameters excess auto_munge_file )],
+  ## no critic (RequireInterpolationOfMetachars)
+  message => q[auto_munge_file only accepts 2 parameters, $FILE and $CALLBACK],
+  id      => 'auto_munge_file_params_excess',
+};
+
+my $ex_auto_munge_file_param_file_bad = {
+  tags => [qw( parameters file bad mismatch invalid )],
+  id   => 'auto_munge_file_param_file_bad',
+  ## no critic (ValuesAndExpressions::RestrictLongStrings)
+  message => 'auto_munge_file must be passed a Dist::Zilla File or a compatible object for parameter 0',
+};
+
+sub auto_munge_file {
+  my (@all) = @_;
+  my ( $file, $callback, @rest ) = @all;
+  if (@rest) {
+    __PACKAGE__->_error(
+      %{$ex_auto_munge_file_params_excess},
+      payload => {
+        parameters => \@all,
+        errors     => \@rest,
+        understood => {
+          qw( $file )     => $file,
+          qw( $callback ) => $callback,
+        },
+      },
+    );
+  }
+  if ( not $file or not $file->can('content') ) {
+    __PACKAGE__->_error(
+      %{$ex_auto_munge_file_param_file_bad},
+      payload => {
+        parameter_no => 0,
+        expects      => [qw[ defined ->can(content) ]],
+        got          => $file,
+      },
+    );
+  }
+  if ( not defined $callback or not ref $callback eq 'CODE' ) {
+    __PACKAGE__->_error(
+      message => 'auto_munge_file must be passed a subroutine as parameter 1',
+      payload => {
+        parameter_no => '1',
+        expects      => [qw[ defined ref Code ]],
+        got          => $callback,
+      },
+      id   => 'auto_munge_file_callback_bad',
+      tags => [qw( parameters config via bad mismatch invalid )],
+    );
+  }
+  if ( $file->can('code') ) {
+    return munge_FromCode( $file, $callback );
+  }
+  return munge_InMemory( $file, $callback );
+
+}
+
+=func c<to_InMemory>
+
+Given a C<FromCode>, return an equivalent C<InMemory> file, flattening the callback
+in the process into simply a string.
+
+  my $in_memory = to_InMemory( $from_code );
+
+=cut
+
+sub to_InMemory {
+  my ($file)   = @_;
+  my $encoding = $file->encoding;
+  my %args     = (
+    name     => $file->name,
+    encoding => $encoding,
+    added_by => $file->added_by,
+    mode     => $file->mode,
+  );
+  if ( $encoding eq 'bytes' ) {
+    $args{encoded_content} = $file->encoded_content;
+  }
+  else {
+    $args{content} = $file->content;
+  }
+  require Dist::Zilla::File::InMemory;
+  return Dist::Zilla::File::InMemory->new(%args);
+}
+
+=func c<to_FromCode>
+
+Given a C<InMemory> or C<OnDisk>, return an equivalent C<FromCode> file, converting the content into a callback that yields that content.
+
+  my $from_code = to_FromCode( $in_memory_or_from_disk );
+
+=cut
+
+sub to_FromCode {
+  my ($file)   = @_;
+  my $encoding = $file->encoding;
+  my %args     = (
+    name     => $file->name,
+    added_by => $file->added_by,
+    mode     => $file->mode,
+  );
+  if ( $encoding eq 'bytes' ) {
+    my $ec = $file->encoded_content;
+    $args{code} = sub { return $ec };
+    $args{code_return_type} = 'bytes';
+  }
+  else {
+    my $c = $file->content;
+    $args{code} = sub { return $c };
+    $args{code_return_type} = 'text';
+  }
+  require Dist::Zilla::File::FromCode;
+  return Dist::Zilla::File::FromCode->new(%args);
+}
+
+=func C<munge_InMemory>
+
+Munge an C<InMemory> ( or similar ) item using a callback.
+
+  munge_InMemory( $xfile, sub {
+    my ( $file, $content, $encoding ) = @_;
+     ...
+    return $content;
+  });
+
+This munging is applied immediately.
+
+=cut
+
+sub munge_InMemory {
+  my ( $file, $coderef ) = @_;
+  if ( $file->encoding eq 'bytes' ) {
+    return $file->encoded_content( $coderef->( $file, $file->content, 'bytes' ) );
+  }
+  $file->content( $coderef->( $file, $file->content, 'text' ) );
+  return 1;
+}
+
+=func C<munge_FromCode>
+
+Munge a C<FromCode> object by replacing the C<CodeRef> with a new one that yields the former.
+
+  munge_FromCode( $xfile, sub {
+    my ( $file, $content, $encoding ) = @_;
+
+    $content =~ s/foo/bar/;
+
+    return $content;
+  });
+
+Note: this code is equivalent to:
+
+  my $orig_code = $xfile->code;
+  my $encoding  = $xfile->core_return_type;
+  $xfile->code( sub {
+
+    my $content = $xfile->$orig_code();
+
+    $content =~ s/a/b/;
+
+    return $content;
+  });
+
+=cut
+
+sub munge_FromCode {
+  my ( $file, $coderef ) = @_;
+  my $oldcoderef  = $file->code;
+  my $return_type = $file->code_return_type;
+  $file->code(
+    sub {
+      $coderef->( $file, $oldcoderef->(), $return_type );
+    }
+  );
+  return 1;
+}
+
+use Scalar::Util qw(blessed);
+
+=func C<inplace_replace>
+
+This is a rather nasty way to replace an Object in place without breaking references held on it.
+
+Consider:
+
+  source = ADDR=0x015 = data = { x => y }
+                      = class = Foo
+
+  target = ADDR=0x017 = data = { z => a }
+                      = class = Bar
+
+  array  = ADDR=0x016 = data = [ 0x015 ]
+
+Then:
+
+  delete source->{x}
+  source->{z} = target->{z}
+  bless source, 'Bar'
+
+This should result in:
+
+  source = ADDR=0x015 = data = { z => a }
+                      = class = Bar
+
+  target = ADDR=0x017 = data = { z => a }
+                      = class = Bar
+
+  array  = ADDR=0x016 = data = [ 0x015 ]
+
+Yes, this is rather nasty to do this, but no good alternatives at the moment :).
+
+  inplace_replace( $original_object, $replacement_object );
+
+This will mirror all the keys from C<$replacement_object> to C<$original_object>, and subsequently
+ensure C<$original_object> is C<reblessed> into the class of C<$replacement_object>
+
+=cut
+
+# This is a little bit nasty, but can you suggest a better way?
+# TODO
+sub inplace_replace {
+  my ( $orig, $replacement ) = @_;
+  my $newclass = blessed $replacement;
+  for my $oldkey ( keys %{$orig} ) {
+    delete $orig->{$oldkey};
+  }
+  for my $newkey ( keys %{$replacement} ) {
+    $orig->{$newkey} = $replacement->{$newkey};
+  }
+  bless $orig, $newclass;
+  return 1;
+}
+
+=func C<inplace_to_FromCode>
+
+Shorthand for
+
+  inplace_replace( $file, to_FromCode($file) );
+
+=cut
+
+sub inplace_to_FromCode {
+  my ($file) = @_;
+  return inplace_replace( $file, to_FromCode($file) );
+}
+
+=func C<inplace_to_InMemory>
+
+Shorthand for
+
+  inplace_replace( $file, to_InMemory($file) );
+
+=cut
+
+sub inplace_to_InMemory {
+  my ($file) = @_;
+  return inplace_replace( $file, to_InMemory($file) );
+}
 
 =func munge_file
 
