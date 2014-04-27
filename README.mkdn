@@ -4,7 +4,7 @@ Dist::Zilla::Util::SimpleMunge - Make munging File::FromCode and File::InMemory 
 
 # VERSION
 
-version 0.2.2
+version 0.002003
 
 # SYNOPSIS
 
@@ -38,7 +38,7 @@ version 0.2.2
 
 #### $FILE
 
-A [`::Role::File` ](http://search.cpan.org/perldoc?Dist::Zilla::Role::File) object to munge.
+A [`::Role::File` ](https://metacpan.org/pod/Dist::Zilla::Role::File) object to munge.
 
 #### %CONFIGURATION
 
@@ -51,7 +51,7 @@ A [`::Role::File` ](http://search.cpan.org/perldoc?Dist::Zilla::Role::File) obje
 
 Called to munge the file itself.
 
-Passed a reference to the [`::Role::File` ](http://search.cpan.org/perldoc?Dist::Zilla::Role::File) instance, and a scalar containing
+Passed a reference to the [`::Role::File` ](https://metacpan.org/pod/Dist::Zilla::Role::File) instance, and a scalar containing
 the contents of that file.
 
 Return new content for the file via `return`
@@ -71,11 +71,11 @@ being munged.
     $LAZINESS = 0     ;  # Munge immediately
     $LAZINESS = 1     ;  # Defer munging till as late as possible.
 
-For things that are normally backed by scalar values, such as [`::File::OnDisk` ](http://search.cpan.org/perldoc?Dist::Zilla::File::OnDisk) and
-[`::File::InMemory` ](http://search.cpan.org/perldoc?Dist::Zilla::File::InMemory), the laziness is equivalent to ` $LAZINESS = 0 `, which is not lazy at all, and
+For things that are normally backed by scalar values, such as [`::File::OnDisk` ](https://metacpan.org/pod/Dist::Zilla::File::OnDisk) and
+[`::File::InMemory` ](https://metacpan.org/pod/Dist::Zilla::File::InMemory), the laziness is equivalent to ` $LAZINESS = 0 `, which is not lazy at all, and
 munges the file content immediately.
 
-For things backed by code, such as [`::File::FromCode` ](http://search.cpan.org/perldoc?Dist::Zilla::File::FromCode), munging defaults to ` $LAZINESS = 1 `, where the
+For things backed by code, such as [`::File::FromCode` ](https://metacpan.org/pod/Dist::Zilla::File::FromCode), munging defaults to ` $LAZINESS = 1 `, where the
 actual munging sub you specify is executed as late as possible.
 
 You can specify the ` $LAZINESS ` value explicitly if you want to customize the behaviour, i.e.: Make something that
@@ -86,7 +86,7 @@ something currently backed by code get munged "now", ( converting the file into 
 
 This is mostly a convenience utility for munging a lot of files without having to hand-code the looping logic.
 
-It basically just proxies for ["munge\_file"](#munge\_file).
+It basically just proxies for ["munge\_file"](#munge_file).
 
     # munge_files ( \@FILEARRAY , \%CONFIGURATION )
 
@@ -97,14 +97,14 @@ It basically just proxies for ["munge\_file"](#munge\_file).
 
 #### @FILEARRAY
 
-An `ArrayRef` of ["$FILE"](#$FILE)
+An `ArrayRef` of ["$FILE"](#file)
 
 #### See Also
 
-- ["%CONFIGURATION"](#%CONFIGURATION)
-- ["$CODEREF"](#$CODEREF)
-- ["$FILE"](#$FILE)
-- ["$LAZINESS"](#$LAZINESS)
+- ["%CONFIGURATION"](#configuration)
+- ["$CODEREF"](#coderef)
+- ["$FILE"](#file)
+- ["$LAZINESS"](#laziness)
 
 # AUTHOR
 
@@ -112,7 +112,7 @@ Kent Fredric <kentnl@cpan.org>
 
 # COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2013 by Kent Fredric <kentnl@cpan.org>.
+This software is copyright (c) 2014 by Kent Fredric <kentnl@cpan.org>.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
