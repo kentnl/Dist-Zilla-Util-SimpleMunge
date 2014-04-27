@@ -5,6 +5,8 @@ package Dist::Zilla::Util::SimpleMunge;
 
 # ABSTRACT: Make munging File::FromCode and File::InMemory easier.
 
+# AUTHORITY
+
 use Sub::Exporter -setup => { exports => [qw[ munge_file munge_files ]], };
 
 =head1 SYNOPSIS
