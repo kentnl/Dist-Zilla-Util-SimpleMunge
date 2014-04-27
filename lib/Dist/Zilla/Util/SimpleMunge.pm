@@ -841,7 +841,7 @@ Shorthand for
 
   inplace_replace( $file, to_InMemory($file) );
 
-=head2 C<munge_file>
+=head2 <munge_file>
 
   # munge_file ( $FILE , \%CONFIGURATION )
 

@@ -204,7 +204,7 @@ FUNCTIONS
 
       inplace_replace( $file, to_InMemory($file) );
 
-  "munge_file"
+  <munge_file>
       # munge_file ( $FILE , \%CONFIGURATION )
 
       munge_file(
