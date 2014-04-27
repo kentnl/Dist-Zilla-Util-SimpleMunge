@@ -365,42 +365,22 @@ something currently backed by code get munged "now", ( converting the file into 
 sub _fromcode_munge {
   my ( $file, $config ) = @_;
   if ( defined $config->{lazy} and $config->{lazy} == 0 ) {
-
-    # This is a little bit nasty, but can you suggest a better way?
-    # TODO
-    my $content = $file->content();
-    delete $file->{code};
-    require Dist::Zilla::File::InMemory;
-    bless $file, 'Dist::Zilla::File::InMemory';
-    $file->content( $config->{via}->( $file, $content ) );
+    inplace_to_InMemory($file);
+    munge_InMemory( $file, $config->{via} );
     return 1;
   }
-  my $coderef = $file->code();
-  $file->code(
-    sub {
-      return $config->{via}->( $file, $coderef->($file) );
-    }
-  );
+  munge_FromCode( $file, $config->{via} );
   return 1;
 }
 
 sub _scalar_munge {
   my ( $file, $config ) = @_;
   if ( defined $config->{lazy} and $config->{lazy} == 1 ) {
-
-    # This is a little bit nasty, but can you suggest a better way?
-    # TODO
-    my $content = delete $file->{content};
-    require Dist::Zilla::File::FromCode;
-    bless $file, 'Dist::Zilla::File::FromCode';
-    $file->code(
-      sub {
-        return $config->{via}->( $file, $content );
-      }
-    );
+    inplace_to_FromCode($file);
+    munge_FromCode( $file, $config->{via} );
     return 1;
   }
-  $file->content( $config->{via}->( $file, $file->content ) );
+  munge_InMemory( $file, $config->{via} );
   return 1;
 }
 
