@@ -31,6 +31,11 @@ Release history for Dist-Zilla-Util-FileMunge-Simple
  - 0.y.z -> 1.yyyzzz
  - This is the primary reason for the 1.x on the box.
 
+ [Dependencies::Aggregate]
+ - 5.008 : 200
+ - 5.010 : 183
+ - 5.019 : 161
+
  [Dependencies::Stats]
  - Dependencies changed since 0.2.2, see Changes.deps{,.all,.dev} for
    details
