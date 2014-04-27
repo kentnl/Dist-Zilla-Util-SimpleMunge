@@ -2,16 +2,86 @@ use strict;
 use warnings;
 
 package Dist::Zilla::Util::SimpleMunge;
-BEGIN {
-  $Dist::Zilla::Util::SimpleMunge::AUTHORITY = 'cpan:KENTNL';
-}
-{
-  $Dist::Zilla::Util::SimpleMunge::VERSION = '0.2.2';
-}
-
+$Dist::Zilla::Util::SimpleMunge::VERSION = '0.002003';
 # ABSTRACT: Make munging File::FromCode and File::InMemory easier.
 
 use Sub::Exporter -setup => { exports => [qw[ munge_file munge_files ]], };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -170,6 +240,38 @@ sub munge_file {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 sub munge_files {
   my ( $array, $config ) = @_;
   for my $file ( @{$array} ) {
@@ -196,7 +298,7 @@ Dist::Zilla::Util::SimpleMunge - Make munging File::FromCode and File::InMemory 
 
 =head1 VERSION
 
-version 0.2.2
+version 0.002003
 
 =head1 SYNOPSIS
 
@@ -311,7 +413,7 @@ Kent Fredric <kentnl@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2013 by Kent Fredric <kentnl@cpan.org>.
+This software is copyright (c) 2014 by Kent Fredric <kentnl@cpan.org>.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
