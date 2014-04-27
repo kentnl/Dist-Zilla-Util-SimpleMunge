@@ -658,7 +658,7 @@ Its mostly the same:
 Except when you come to C<CodeRef>s, that all changes.
 
   my $orig_code = $file->code();
-  $file->code( sub { 
+  $file->code( sub {
       $file->$orig_code() =~ s/foo/bar/
   });
 
@@ -717,7 +717,7 @@ There are a few less simple utilities that may also prove usefull.
 =head2 C<auto_munge_file>
 
   # auto_munge_file ( $FILE, $CODEREF )
-  
+
   auto_munge_file( $zilla_file, sub {
       my ( $file, $content, $encoding ) = @_;
       return $new_content # must still be in form $encoding
@@ -754,7 +754,7 @@ Munge a C<FromCode> object by replacing the coderef with a new one that yeilds t
 
   munge_FromCode( $xfile, sub {
     my ( $file, $content, $encoding ) = @_;
-    
+
     $content =~ s/foo/bar/;
 
     return $content;
@@ -765,11 +765,11 @@ Note: this code is equivalent to:
   my $orig_code = $xfile->code;
   my $encoding  = $xfile->core_return_type;
   $xfile->code( sub {
-    
+
     my $content = $xfile->$orig_code();
 
     $content =~ s/a/b/;
-    
+
     return $content;
   });
 
@@ -812,13 +812,13 @@ ensure C<$original_object> is C<reblessed> into the class of C<$replacement_obje
 
 =head2 C<inplace_to_FromCode>
 
-Shorthand for 
+Shorthand for
 
   inplace_replace( $file, to_FromCode($file) );
 
 =head2 C<inplace_to_InMemory>
 
-Shorthand for 
+Shorthand for
 
   inplace_replace( $file, to_InMemory($file) );
 

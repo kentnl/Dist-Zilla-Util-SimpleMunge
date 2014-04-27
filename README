@@ -39,7 +39,7 @@ DESCRIPTION
     Except when you come to "CodeRef"s, that all changes.
 
       my $orig_code = $file->code();
-      $file->code( sub { 
+      $file->code( sub {
           $file->$orig_code() =~ s/foo/bar/
       });
 
@@ -101,7 +101,7 @@ DESCRIPTION
 FUNCTIONS
   "auto_munge_file"
       # auto_munge_file ( $FILE, $CODEREF )
-  
+
       auto_munge_file( $zilla_file, sub {
           my ( $file, $content, $encoding ) = @_;
           return $new_content # must still be in form $encoding
@@ -136,7 +136,7 @@ FUNCTIONS
 
       munge_FromCode( $xfile, sub {
         my ( $file, $content, $encoding ) = @_;
-    
+
         $content =~ s/foo/bar/;
 
         return $content;
@@ -147,11 +147,11 @@ FUNCTIONS
       my $orig_code = $xfile->code;
       my $encoding  = $xfile->core_return_type;
       $xfile->code( sub {
-    
+
         my $content = $xfile->$orig_code();
 
         $content =~ s/a/b/;
-    
+
         return $content;
       });
 
