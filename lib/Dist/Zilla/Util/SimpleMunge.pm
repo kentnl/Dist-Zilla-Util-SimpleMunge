@@ -4,7 +4,7 @@ use warnings;
 use utf8;
 
 package Dist::Zilla::Util::SimpleMunge;
-$Dist::Zilla::Util::SimpleMunge::VERSION = '1.000000';
+$Dist::Zilla::Util::SimpleMunge::VERSION = '1.000001';
 # ABSTRACT: Make munging File::FromCode and File::InMemory easier.
 
 our $AUTHORITY = 'cpan:KENTNL'; # AUTHORITY
@@ -638,7 +638,7 @@ Dist::Zilla::Util::SimpleMunge - Make munging File::FromCode and File::InMemory 
 
 =head1 VERSION
 
-version 1.000000
+version 1.000001
 
 =head1 SYNOPSIS
 
@@ -742,14 +742,14 @@ There are a few less simple utilities that may also prove useful.
       return $new_content # must still be in form $encoding
   });
 
-=head2 c<to_InMemory>
+=head2 C<to_InMemory>
 
 Given a C<FromCode>, return an equivalent C<InMemory> file, flattening the callback
 in the process into simply a string.
 
   my $in_memory = to_InMemory( $from_code );
 
-=head2 c<to_FromCode>
+=head2 C<to_FromCode>
 
 Given a C<InMemory> or C<OnDisk>, return an equivalent C<FromCode> file, converting the content into a callback that yields that content.
 
@@ -841,7 +841,7 @@ Shorthand for
 
   inplace_replace( $file, to_InMemory($file) );
 
-=head2 <munge_file>
+=head2 C<munge_file>
 
   # munge_file ( $FILE , \%CONFIGURATION )
 
