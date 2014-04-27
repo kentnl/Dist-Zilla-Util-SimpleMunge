@@ -514,7 +514,7 @@ sub munge_file {
     );
   }
 
-  if ( not exists $config->{via} or not defined $config->{via} or not ref $config->{via} eq 'CODE' ) {
+  if ( not exists $config->{via} or not defined $config->{via} or not 'CODE' eq ref $config->{via} ) {
     __PACKAGE__->_error(
       message => 'munge_file must be passed a subroutine in the configuration hash as \'via\'',
       payload => {
@@ -530,8 +530,8 @@ sub munge_file {
   if (
     exists $config->{lazy}
     and not( ( not defined $config->{lazy} )
-      or ( $config->{lazy} == 0 )
-      or ( $config->{lazy} == 1 ) )
+      or ( 0 == $config->{lazy} )
+      or ( 1 == $config->{lazy} ) )
     )
   {
     __PACKAGE__->_error(
@@ -567,7 +567,7 @@ sub munge_file {
   # and everything else is assumed to be in-memory scalars.
   #
   if ( exists $config->{native} and defined $config->{native} ) {
-    if ( $config->{native} eq 'filemungeapi' ) {    # The API as proposed by Kentnl
+    if ( 'filemungeapi' eq $config->{native} ) {    # The API as proposed by Kentnl
       if ( $file->can('munge') ) {
         return $file->munge( $config->{via} );
       }
