@@ -10,10 +10,12 @@ use Test::More;
 use Dist::Zilla::Util::SimpleMunge qw( munge_file );
 use Dist::Zilla::File::InMemory;
 use Dist::Zilla::File::FromCode;
+use Dist::Zilla::File::OnDisk;
 
 my $in_memory = Dist::Zilla::File::InMemory->new(
-  name    => 'in_memory.file',
-  content => "Initial Value",
+  name     => 'in_memory.file',
+  content  => "Initial Value",
+  added_by => "Hand",
 );
 
 my $v = 0;
@@ -23,7 +25,9 @@ my $from_code = Dist::Zilla::File::FromCode->new(
   code => sub {
     $v++;
     return "$v";
-  }
+  },
+  code_return_type => 'text',
+  added_by         => "Hand",
 );
 
 pass("Initial setup is successful");
@@ -89,6 +93,22 @@ is( $from_code->content, 'munged_level2 0 1', 'code->static->code has been re-mu
 is( $from_code->content, 'munged_level2 1 1', 'code->static->code has been re-munged properly x2' );
 is( $v,                  1,                   'code->static->code doesnt remunge old munges' );
 is( $x,                  2,                   'code->static->code remunges new munges' );
+
+my $on_disk = Dist::Zilla::File::OnDisk->new( name => $0 );
+
+munge_file(
+  $on_disk => {
+    via => sub {
+      my ( $file, $content ) = @_;
+      $content = "^_^ $content";
+      return $content;
+    },
+    lazy => undef,
+  }
+);
+
+my $expect = '^_^ use strict';
+is( ( substr $on_disk->content, 0, length $expect ), $expect, 'on_disk file munges correctly' );
 
 done_testing;
 
