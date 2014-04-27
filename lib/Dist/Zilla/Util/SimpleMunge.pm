@@ -14,21 +14,96 @@ use Sub::Exporter -setup => { exports =>
 
 =head1 SYNOPSIS
 
-  use Dist::Zilla::Util::SimpleMunge qw( munge_file munge_files );
+  use Dist::Zilla::Util::SimpleMunge qw( auto_munge_file );
   ...;
 
   sub somesub {
     ...;
-    munge_file $file_from_zilla, {
-      via => sub {
-        my ( $file, $content ) = @_;
+
+    next if $file->is_bytes;
+
+    if ( $file->can('code') ) {
+
+    auto_munge_file $file_from_zilla, sub {
+        my ( $file, $content , $encoding ) = @_;
+        return $mangled if $encoding ne 'text'; # bytes or text
         ... mangle $content here ...;
         return $mangled;
-      },
     };
   }
 
 =cut
+
+=head1 DESCRIPTION
+
+=head2 NOTE: STOPGAP
+
+This module is mostly a stopgap and a implementation experiment in lieu of something better in Dist::Zilla eventually transpiring.
+
+=head2 BASIC USAGE
+
+Munging files in Dist::Zilla can be a pain.
+
+Its mostly the same:
+
+  $file->content( substr( $file->content, 0, 10 ) ); # etc.
+
+Except when you come to C<CodeRef>s, that all changes.
+
+  my $orig_code = $file->code();
+  $file->code( sub {
+      $file->$orig_code() =~ s/foo/bar/
+  });
+
+Which quickly gets messy.
+
+So this module is as simple as I think I can get it without hacking Dist::Zilla directly.
+
+  auto_munge_file $file, sub {
+     my ( $thefile, $content, $encoding ) = @_;
+  };
+
+The callback will be called as appropriate.
+
+=over 4
+
+=item * C<$content> will contain the content, I<decoded if possible>
+
+=item * C<$encoding> will be either C<text> or C<bytes>, the latter if decoding is not possible.
+
+=item * C<InMemory> will apply the code immediately
+
+=item * C<FromCode> will take your code and create a chained system so your code will be evaluated when the file itself is written out.
+
+=back
+
+And this is the most useful and straight forward interface that doesn't invoke any weird re-blessing magic.
+
+=head2 ADVANCED USAGE
+
+There are a few less simple utilities that may also prove useful.
+
+=over 4
+
+=item * L<< C<munge_InMemory>|/munge_InMemory >> - trusts you know what you're dealing with and munges an C<InMemory> instance via the callback.
+
+=item * L<< C<munge_FromCode>|/munge_FromCode >> - trusts you when you say you have a C<FromCode>, and munges with C<CodeRef> chaining.
+
+=item * L<< C<inplace_replace>|/inplace_replace >> - A bit of magic to replace an object in-place without modifying any containers that point to it and without changing the reference address.
+
+=item * L<< C<to_InMemory>|/to_InMemory >> - returns a C<FromCode> represented as a new C<InMemory> object.
+
+=item * L<< C<to_FromCode>|/to_FromCode >> - returns an C<InMemory> represented as a new C<FromCode> object.
+
+=item * L<< C<inplace_to_InMemory>|/inplace_to_InMemory >> - like C<to_InMemory>, but replaces the object in-place.
+
+=item * L<< C<inplace_to_FromCode>|/inplace_to_FromCode >> - like C<to_FromCode>, but replaces the object in-place.
+
+=item * L<< C<munge_file>|/munge_file >> - combines all of the above behaviors based on configuration values.
+
+=item * L<< C<munge_files>|/munge_files >> - applies a single configuration and callback to a collection of files.
+
+=back
 
 =func C<auto_munge_file>
 
@@ -302,7 +377,7 @@ sub inplace_to_InMemory {
   return inplace_replace( $file, to_InMemory($file) );
 }
 
-=func munge_file
+=func <munge_file>
 
   # munge_file ( $FILE , \%CONFIGURATION )
 
@@ -356,7 +431,7 @@ munges the file content immediately.
 For things backed by code, such as L<< C<::File::FromCode> |Dist::Zilla::File::FromCode >>, munging defaults to C< $LAZINESS = 1 >, where the
 actual munging sub you specify is executed as late as possible.
 
-You can specify the C< $LAZINESS > value explicitly if you want to customize the behaviour, i.e.: Make something that
+You can specify the C< $LAZINESS > value explicitly if you want to customize the behavior, i.e.: Make something that
 is presently a scalar type get munged as late as possible ( converting the file into a C<FromCode> file ), or make
 something currently backed by code get munged "now", ( converting the file into a C<InMemory> file )
 
