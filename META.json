@@ -80,6 +80,7 @@
       "runtime" : {
          "requires" : {
             "Carp" : "0",
+            "Dist::Zilla" : "5.000",
             "Dist::Zilla::File::FromCode" : "0",
             "Dist::Zilla::File::InMemory" : "0",
             "Scalar::Util" : "0",
@@ -98,6 +99,7 @@
             "Test::More" : "1.001003"
          },
          "requires" : {
+            "Dist::Zilla::File::OnDisk" : "0",
             "ExtUtils::MakeMaker" : "0",
             "File::Spec::Functions" : "0",
             "List::Util" : "0",
@@ -130,8 +132,10 @@
          "CPAN::Meta" : "2.140640",
          "CPAN::Meta::Requirements" : "2.125",
          "Carp" : "1.3301",
+         "Dist::Zilla" : "5.015",
          "Dist::Zilla::File::FromCode" : "5.015",
          "Dist::Zilla::File::InMemory" : "5.015",
+         "Dist::Zilla::File::OnDisk" : "5.015",
          "Dist::Zilla::Plugin::Authority" : "1.006",
          "Dist::Zilla::Plugin::AutoPrereqs" : "5.015",
          "Dist::Zilla::Plugin::ConfirmRelease" : "5.015",

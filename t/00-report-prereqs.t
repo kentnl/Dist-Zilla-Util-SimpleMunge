@@ -109,6 +109,7 @@ my $static_prereqs = do { my $x = {
        'runtime' => {
                       'requires' => {
                                       'Carp' => '0',
+                                      'Dist::Zilla' => '5.000',
                                       'Dist::Zilla::File::FromCode' => '0',
                                       'Dist::Zilla::File::InMemory' => '0',
                                       'Scalar::Util' => '0',
@@ -127,6 +128,7 @@ my $static_prereqs = do { my $x = {
                                      'Test::More' => '1.001003'
                                    },
                    'requires' => {
+                                   'Dist::Zilla::File::OnDisk' => '0',
                                    'ExtUtils::MakeMaker' => '0',
                                    'File::Spec::Functions' => '0',
                                    'List::Util' => '0',

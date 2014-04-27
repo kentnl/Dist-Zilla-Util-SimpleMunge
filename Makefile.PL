@@ -22,6 +22,7 @@ my %WriteMakefileArgs = (
   "NAME" => "Dist::Zilla::Util::SimpleMunge",
   "PREREQ_PM" => {
     "Carp" => 0,
+    "Dist::Zilla" => "5.000",
     "Dist::Zilla::File::FromCode" => 0,
     "Dist::Zilla::File::InMemory" => 0,
     "Scalar::Util" => 0,
@@ -31,6 +32,7 @@ my %WriteMakefileArgs = (
     "warnings" => 0
   },
   "TEST_REQUIRES" => {
+    "Dist::Zilla::File::OnDisk" => 0,
     "ExtUtils::MakeMaker" => 0,
     "File::Spec::Functions" => 0,
     "List::Util" => 0,
@@ -46,8 +48,10 @@ my %WriteMakefileArgs = (
 
 my %FallbackPrereqs = (
   "Carp" => 0,
+  "Dist::Zilla" => "5.000",
   "Dist::Zilla::File::FromCode" => 0,
   "Dist::Zilla::File::InMemory" => 0,
+  "Dist::Zilla::File::OnDisk" => 0,
   "ExtUtils::MakeMaker" => 0,
   "File::Spec::Functions" => 0,
   "List::Util" => 0,
