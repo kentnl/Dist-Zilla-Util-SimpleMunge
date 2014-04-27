@@ -126,6 +126,7 @@ my $ex_auto_munge_file_params_excess = {
 my $ex_auto_munge_file_param_file_bad = {
   tags    => [qw( parameters file bad mismatch invalid )],
   id      => 'auto_munge_file_param_file_bad',
+  ## no critic (ValuesAndExpressions::RestrictLongStrings)
   message => 'auto_munge_file must be passed a Dist::Zilla File or a compatible object for parameter 0',
 };
 
