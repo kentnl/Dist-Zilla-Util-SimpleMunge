@@ -156,7 +156,7 @@ sub auto_munge_file {
       },
     );
   }
-  if ( not defined $callback or not ref $callback eq 'CODE' ) {
+  if ( not defined $callback or not 'CODE' eq ref $callback ) {
     __PACKAGE__->_error(
       message => 'auto_munge_file must be passed a subroutine as parameter 1',
       payload => {
@@ -193,7 +193,7 @@ sub to_InMemory {
     added_by => $file->added_by,
     mode     => $file->mode,
   );
-  if ( $encoding eq 'bytes' ) {
+  if ( 'bytes' eq $encoding ) {
     $args{encoded_content} = $file->encoded_content;
   }
   else {
@@ -219,7 +219,7 @@ sub to_FromCode {
     added_by => $file->added_by,
     mode     => $file->mode,
   );
-  if ( $encoding eq 'bytes' ) {
+  if ( 'bytes' eq $encoding ) {
     my $ec = $file->encoded_content;
     $args{code} = sub { return $ec };
     $args{code_return_type} = 'bytes';
@@ -249,7 +249,7 @@ This munging is applied immediately.
 
 sub munge_InMemory {
   my ( $file, $coderef ) = @_;
-  if ( $file->encoding eq 'bytes' ) {
+  if ( 'bytes' eq $file->encoding ) {
     return $file->encoded_content( $coderef->( $file, $file->content, 'bytes' ) );
   }
   $file->content( $coderef->( $file, $file->content, 'text' ) );
@@ -290,7 +290,7 @@ sub munge_FromCode {
   $file->code(
     sub {
       $coderef->( $file, $oldcoderef->(), $return_type );
-    }
+    },
   );
   return 1;
 }
@@ -439,7 +439,7 @@ something currently backed by code get munged "now", ( converting the file into 
 
 sub _fromcode_munge {
   my ( $file, $config ) = @_;
-  if ( defined $config->{lazy} and $config->{lazy} == 0 ) {
+  if ( defined $config->{lazy} and 0 == $config->{lazy} ) {
     inplace_to_InMemory($file);
     munge_InMemory( $file, $config->{via} );
     return 1;
@@ -450,7 +450,7 @@ sub _fromcode_munge {
 
 sub _scalar_munge {
   my ( $file, $config ) = @_;
-  if ( defined $config->{lazy} and $config->{lazy} == 1 ) {
+  if ( defined $config->{lazy} and 1 == $config->{lazy} ) {
     inplace_to_FromCode($file);
     munge_FromCode( $file, $config->{via} );
     return 1;
@@ -501,7 +501,7 @@ sub munge_file {
     );
   }
 
-  if ( not ref $config or not ref $config eq 'HASH' ) {
+  if ( not ref $config or not 'HASH' eq ref $config ) {
     __PACKAGE__->_error(
       message => 'munge_file must be passed a HashReference for parameter 1',
       payload => {
@@ -514,7 +514,7 @@ sub munge_file {
     );
   }
 
-  if ( not exists $config->{via} or not defined $config->{via} or not ref $config->{via} eq 'CODE' ) {
+  if ( not exists $config->{via} or not defined $config->{via} or not 'CODE' eq ref $config->{via} ) {
     __PACKAGE__->_error(
       message => 'munge_file must be passed a subroutine in the configuration hash as \'via\'',
       payload => {
@@ -530,8 +530,8 @@ sub munge_file {
   if (
     exists $config->{lazy}
     and not( ( not defined $config->{lazy} )
-      or ( $config->{lazy} == 0 )
-      or ( $config->{lazy} == 1 ) )
+      or ( 0 == $config->{lazy} )
+      or ( 1 == $config->{lazy} ) )
     )
   {
     __PACKAGE__->_error(
@@ -567,7 +567,7 @@ sub munge_file {
   # and everything else is assumed to be in-memory scalars.
   #
   if ( exists $config->{native} and defined $config->{native} ) {
-    if ( $config->{native} eq 'filemungeapi' ) {    # The API as proposed by Kentnl
+    if ( 'filemungeapi' eq $config->{native} ) {    # The API as proposed by Kentnl
       if ( $file->can('munge') ) {
         return $file->munge( $config->{via} );
       }
@@ -621,7 +621,7 @@ sub munge_files {
 }
 
 sub _error {
-  my ( $self, %config ) = @_;
+  my ( undef, %config ) = @_;
   require Carp;
   return Carp::croak( $config{message} );
 }
