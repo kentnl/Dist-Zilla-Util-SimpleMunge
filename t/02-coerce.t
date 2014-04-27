@@ -12,8 +12,9 @@ use Dist::Zilla::File::InMemory;
 use Dist::Zilla::File::FromCode;
 
 my $in_memory = Dist::Zilla::File::InMemory->new(
-  name    => 'in_memory.file',
-  content => "Initial Value",
+  name     => 'in_memory.file',
+  content  => "Initial Value",
+  added_by => "Hand",
 );
 
 my $v = 0;
@@ -23,7 +24,9 @@ my $from_code = Dist::Zilla::File::FromCode->new(
   code => sub {
     $v++;
     return "$v";
-  }
+  },
+  code_return_type => 'text',
+  added_by         => "Hand",
 );
 
 pass("Initial setup is successful");

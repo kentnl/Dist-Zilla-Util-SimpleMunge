@@ -111,6 +111,7 @@ my $static_prereqs = do { my $x = {
                                       'Carp' => '0',
                                       'Dist::Zilla::File::FromCode' => '0',
                                       'Dist::Zilla::File::InMemory' => '0',
+                                      'Scalar::Util' => '0',
                                       'Sub::Exporter' => '0',
                                       'perl' => '5.006',
                                       'strict' => '0',
