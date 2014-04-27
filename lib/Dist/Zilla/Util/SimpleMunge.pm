@@ -280,7 +280,7 @@ sub munge_FromCode {
   my $return_type = $file->code_return_type;
   $file->code(
     sub {
-      $coderef->( $file, $oldcoderef->(), $file->code_return_type );
+      $coderef->( $file, $oldcoderef->(), $return_type );
     }
   );
   return 1;
