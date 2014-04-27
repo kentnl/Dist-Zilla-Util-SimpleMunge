@@ -4,7 +4,7 @@ Dist::Zilla::Util::SimpleMunge - Make munging File::FromCode and File::InMemory 
 
 # VERSION
 
-version 1.000000
+version 1.000001
 
 # SYNOPSIS
 
@@ -89,14 +89,14 @@ There are a few less simple utilities that may also prove useful.
         return $new_content # must still be in form $encoding
     });
 
-## c<to\_InMemory>
+## `to_InMemory`
 
 Given a `FromCode`, return an equivalent `InMemory` file, flattening the callback
 in the process into simply a string.
 
     my $in_memory = to_InMemory( $from_code );
 
-## c<to\_FromCode>
+## `to_FromCode`
 
 Given a `InMemory` or `OnDisk`, return an equivalent `FromCode` file, converting the content into a callback that yields that content.
 
@@ -188,7 +188,7 @@ Shorthand for
 
     inplace_replace( $file, to_InMemory($file) );
 
-## <munge\_file>
+## `munge_file`
 
     # munge_file ( $FILE , \%CONFIGURATION )
 

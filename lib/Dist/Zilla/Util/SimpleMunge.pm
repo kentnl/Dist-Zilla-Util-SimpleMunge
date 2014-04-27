@@ -175,7 +175,7 @@ sub auto_munge_file {
 
 }
 
-=func c<to_InMemory>
+=func C<to_InMemory>
 
 Given a C<FromCode>, return an equivalent C<InMemory> file, flattening the callback
 in the process into simply a string.
@@ -203,7 +203,7 @@ sub to_InMemory {
   return Dist::Zilla::File::InMemory->new(%args);
 }
 
-=func c<to_FromCode>
+=func C<to_FromCode>
 
 Given a C<InMemory> or C<OnDisk>, return an equivalent C<FromCode> file, converting the content into a callback that yields that content.
 
@@ -377,7 +377,7 @@ sub inplace_to_InMemory {
   return inplace_replace( $file, to_InMemory($file) );
 }
 
-=func <munge_file>
+=func C<munge_file>
 
   # munge_file ( $FILE , \%CONFIGURATION )
 
