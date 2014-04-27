@@ -28,6 +28,7 @@ for my $wordlist (@stopwords) {
 
 #$bundle->remove_policy('ErrorHandling::RequireCarping');
 $bundle->remove_policy('NamingConventions::Capitalization');
+$bundle->remove_policy('NamingConventions::ProhibitMixedCaseSubs');
 
 my $inf = $bundle->actionlist->get_inflated;
 
