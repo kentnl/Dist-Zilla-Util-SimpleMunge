@@ -1,6 +1,36 @@
 Release history for Dist-Zilla-Util-FileMunge-Simple
 
-1.000000 2014-04-27T10:37:19Z
+1.000000 2014-04-27T10:52:04Z
+ [00 Major]
+ - This is a major set of changes, but mostly forwards compatible.
+ - Only a few minor packaging backcompat risks for downstream $VENDORs who
+   work by HAND.
+
+ [01 DZil 5 Encoding Support]
+ - Dist::Zilla >= 5.0 is now mandatory
+ - Callback functions now pass an "encoding" value ( either 'text' or
+   'bytes' )
+ - This is mostly a pragmatic choice, if it can be decoded, you probably
+   want to work with it decoded
+ - Otherwise you'll probably want to work with it as bytes.
+
+ [02 New Functions]
+ - A whole bunch of new functions have been added which are more DWIM and
+   trying smarter to advoid the horrible black magic. - auto_munge_file now
+   the most recommended approach, but supports no laziness overiding.
+
+ [03 Less Black Magic]
+ - There's still a rebless trick or two to cast the refs in-place, but they
+   should be more stable and less prone to initialization-based errors.
+
+ [04 New Tooling]
+ - ExtUtils::MakeMaker has taken precedence over Module::Build
+ - Dependencies on latest versions are now only recommended, not required.
+
+ [05 New Verson Scheme]
+ - 0.y.z -> 1.yyyzzz
+ - This is the primary reason for the 1.x on the box.
+
  [Dependencies::Stats]
  - Dependencies changed since 0.2.2, see Changes.deps{,.all,.dev} for
    details
@@ -12,7 +42,7 @@ Release history for Dist-Zilla-Util-FileMunge-Simple
 
 0.2.2 2013-05-15T15:32:05Z
  - Minor Maintenance release.
- 
+
  [Dependencies::Stats]
  - Dependencies changed since 0.2.1, see Changes.deps{,.all,.dev} for
    details
@@ -64,7 +94,7 @@ Release history for Dist-Zilla-Util-FileMunge-Simple
 0.1.2 2011-10-07T18:44:02Z
  - First non-trial release now demonstratably able to do 99% of its
    intended task.
- 
+
  [Dependencies::Stats]
  - Dependencies changed since 0.1.1, see Changes.deps{,.all,.dev} for
    details
