@@ -621,7 +621,7 @@ sub munge_files {
 }
 
 sub _error {
-  my ( $self, %config ) = @_;
+  my ( undef, %config ) = @_;
   require Carp;
   return Carp::croak( $config{message} );
 }
