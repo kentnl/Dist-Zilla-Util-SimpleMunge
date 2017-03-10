@@ -4,7 +4,9 @@ use warnings;
 use utf8;
 
 package Dist::Zilla::Util::SimpleMunge;
-$Dist::Zilla::Util::SimpleMunge::VERSION = '1.000002';
+
+our $VERSION = '1.000002';
+
 # ABSTRACT: Make munging File::FromCode and File::InMemory easier.
 
 our $AUTHORITY = 'cpan:KENTNL'; # AUTHORITY
