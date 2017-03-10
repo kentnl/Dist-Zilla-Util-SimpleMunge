@@ -5,6 +5,8 @@ use utf8;
 
 package Dist::Zilla::Util::SimpleMunge;
 
+our $VERSION = '1.000002';
+
 # ABSTRACT: Make munging File::FromCode and File::InMemory easier.
 
 # AUTHORITY
