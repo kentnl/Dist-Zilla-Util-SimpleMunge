@@ -4,7 +4,7 @@ use warnings;
 use utf8;
 
 package Dist::Zilla::Util::SimpleMunge;
-$Dist::Zilla::Util::SimpleMunge::VERSION = '1.000001';
+$Dist::Zilla::Util::SimpleMunge::VERSION = '1.000002';
 # ABSTRACT: Make munging File::FromCode and File::InMemory easier.
 
 our $AUTHORITY = 'cpan:KENTNL'; # AUTHORITY
@@ -632,13 +632,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Dist::Zilla::Util::SimpleMunge - Make munging File::FromCode and File::InMemory easier.
 
 =head1 VERSION
 
-version 1.000001
+version 1.000002
 
 =head1 SYNOPSIS
 
@@ -936,7 +938,7 @@ Kent Fredric <kentnl@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2014 by Kent Fredric <kentnl@cpan.org>.
+This software is copyright (c) 2017 by Kent Fredric <kentnl@cpan.org>.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

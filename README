@@ -1,297 +1,101 @@
-NAME
-    Dist::Zilla::Util::SimpleMunge - Make munging File::FromCode and
-    File::InMemory easier.
+Dist::Zilla::Util::SimpleMunge
 
-VERSION
-    version 1.000001
-
-SYNOPSIS
-      use Dist::Zilla::Util::SimpleMunge qw( auto_munge_file );
-      ...;
-
-      sub somesub {
-        ...;
-
-        next if $file->is_bytes;
-
-        if ( $file->can('code') ) {
-
-        auto_munge_file $file_from_zilla, sub {
-            my ( $file, $content , $encoding ) = @_;
-            return $mangled if $encoding ne 'text'; # bytes or text
-            ... mangle $content here ...;
-            return $mangled;
-        };
-      }
-
-DESCRIPTION
   NOTE: STOPGAP
-    This module is mostly a stopgap and a implementation experiment in lieu
-    of something better in Dist::Zilla eventually transpiring.
+
+This module is mostly a stopgap and a implementation experiment in lieu
+of something better in Dist::Zilla eventually transpiring.
 
   BASIC USAGE
-    Munging files in Dist::Zilla can be a pain.
 
-    Its mostly the same:
+Munging files in Dist::Zilla can be a pain.
 
-      $file->content( substr( $file->content, 0, 10 ) ); # etc.
+Its mostly the same:
 
-    Except when you come to "CodeRef"s, that all changes.
+  $file->content( substr( $file->content, 0, 10 ) ); # etc.
 
-      my $orig_code = $file->code();
-      $file->code( sub {
-          $file->$orig_code() =~ s/foo/bar/
-      });
+Except when you come to "CodeRef"s, that all changes.
 
-    Which quickly gets messy.
+  my $orig_code = $file->code();
+  $file->code( sub {
+      $file->$orig_code() =~ s/foo/bar/
+  });
 
-    So this module is as simple as I think I can get it without hacking
-    Dist::Zilla directly.
+Which quickly gets messy.
 
-      auto_munge_file $file, sub {
-         my ( $thefile, $content, $encoding ) = @_;
-      };
+So this module is as simple as I think I can get it without hacking
+Dist::Zilla directly.
 
-    The callback will be called as appropriate.
+  auto_munge_file $file, sub {
+     my ( $thefile, $content, $encoding ) = @_;
+  };
 
-    *   $content will contain the content, *decoded if possible*
+The callback will be called as appropriate.
 
-    *   $encoding will be either "text" or "bytes", the latter if decoding
-        is not possible.
+*   $content will contain the content, *decoded if possible*
 
-    *   "InMemory" will apply the code immediately
+*   $encoding will be either "text" or "bytes", the latter if decoding
+    is not possible.
 
-    *   "FromCode" will take your code and create a chained system so your
-        code will be evaluated when the file itself is written out.
+*   "InMemory" will apply the code immediately
 
-    And this is the most useful and straight forward interface that doesn't
-    invoke any weird re-blessing magic.
+*   "FromCode" will take your code and create a chained system so your
+    code will be evaluated when the file itself is written out.
+
+And this is the most useful and straight forward interface that doesn't
+invoke any weird re-blessing magic.
 
   ADVANCED USAGE
-    There are a few less simple utilities that may also prove useful.
 
-    *   "munge_InMemory" - trusts you know what you're dealing with and
-        munges an "InMemory" instance via the callback.
+There are a few less simple utilities that may also prove useful.
 
-    *   "munge_FromCode" - trusts you when you say you have a "FromCode",
-        and munges with "CodeRef" chaining.
+*   "munge_InMemory" - trusts you know what you're dealing with and
+    munges an "InMemory" instance via the callback.
 
-    *   "inplace_replace" - A bit of magic to replace an object in-place
-        without modifying any containers that point to it and without
-        changing the reference address.
+*   "munge_FromCode" - trusts you when you say you have a "FromCode",
+    and munges with "CodeRef" chaining.
 
-    *   "to_InMemory" - returns a "FromCode" represented as a new "InMemory"
-        object.
+*   "inplace_replace" - A bit of magic to replace an object in-place
+    without modifying any containers that point to it and without
+    changing the reference address.
 
-    *   "to_FromCode" - returns an "InMemory" represented as a new
-        "FromCode" object.
+*   "to_InMemory" - returns a "FromCode" represented as a new "InMemory"
+    object.
 
-    *   "inplace_to_InMemory" - like "to_InMemory", but replaces the object
-        in-place.
+*   "to_FromCode" - returns an "InMemory" represented as a new
+    "FromCode" object.
 
-    *   "inplace_to_FromCode" - like "to_FromCode", but replaces the object
-        in-place.
+*   "inplace_to_InMemory" - like "to_InMemory", but replaces the object
+    in-place.
 
-    *   "munge_file" - combines all of the above behaviors based on
-        configuration values.
+*   "inplace_to_FromCode" - like "to_FromCode", but replaces the object
+    in-place.
 
-    *   "munge_files" - applies a single configuration and callback to a
-        collection of files.
+*   "munge_file" - combines all of the above behaviors based on
+    configuration values.
 
-FUNCTIONS
-  "auto_munge_file"
-      # auto_munge_file ( $FILE, $CODEREF )
+*   "munge_files" - applies a single configuration and callback to a
+    collection of files.
 
-      auto_munge_file( $zilla_file, sub {
-          my ( $file, $content, $encoding ) = @_;
-          return $new_content # must still be in form $encoding
-      });
+INSTALLATION
 
-  "to_InMemory"
-    Given a "FromCode", return an equivalent "InMemory" file, flattening the
-    callback in the process into simply a string.
+This is a Perl module distribution. It should be installed with whichever
+tool you use to manage your installation of Perl, e.g. any of
 
-      my $in_memory = to_InMemory( $from_code );
+  cpanm .
+  cpan  .
+  cpanp -i .
 
-  "to_FromCode"
-    Given a "InMemory" or "OnDisk", return an equivalent "FromCode" file,
-    converting the content into a callback that yields that content.
+Consult http://www.cpan.org/modules/INSTALL.html for further instruction.
+Should you wish to install this module manually, the procedure is
 
-      my $from_code = to_FromCode( $in_memory_or_from_disk );
-
-  "munge_InMemory"
-    Munge an "InMemory" ( or similar ) item using a callback.
-
-      munge_InMemory( $xfile, sub {
-        my ( $file, $content, $encoding ) = @_;
-         ...
-        return $content;
-      });
-
-    This munging is applied immediately.
-
-  "munge_FromCode"
-    Munge a "FromCode" object by replacing the "CodeRef" with a new one that
-    yields the former.
-
-      munge_FromCode( $xfile, sub {
-        my ( $file, $content, $encoding ) = @_;
-
-        $content =~ s/foo/bar/;
-
-        return $content;
-      });
-
-    Note: this code is equivalent to:
-
-      my $orig_code = $xfile->code;
-      my $encoding  = $xfile->core_return_type;
-      $xfile->code( sub {
-
-        my $content = $xfile->$orig_code();
-
-        $content =~ s/a/b/;
-
-        return $content;
-      });
-
-  "inplace_replace"
-    This is a rather nasty way to replace an Object in place without
-    breaking references held on it.
-
-    Consider:
-
-      source = ADDR=0x015 = data = { x => y }
-                          = class = Foo
-
-      target = ADDR=0x017 = data = { z => a }
-                          = class = Bar
-
-      array  = ADDR=0x016 = data = [ 0x015 ]
-
-    Then:
-
-      delete source->{x}
-      source->{z} = target->{z}
-      bless source, 'Bar'
-
-    This should result in:
-
-      source = ADDR=0x015 = data = { z => a }
-                          = class = Bar
-
-      target = ADDR=0x017 = data = { z => a }
-                          = class = Bar
-
-      array  = ADDR=0x016 = data = [ 0x015 ]
-
-    Yes, this is rather nasty to do this, but no good alternatives at the
-    moment :).
-
-      inplace_replace( $original_object, $replacement_object );
-
-    This will mirror all the keys from $replacement_object to
-    $original_object, and subsequently ensure $original_object is
-    "reblessed" into the class of $replacement_object
-
-  "inplace_to_FromCode"
-    Shorthand for
-
-      inplace_replace( $file, to_FromCode($file) );
-
-  "inplace_to_InMemory"
-    Shorthand for
-
-      inplace_replace( $file, to_InMemory($file) );
-
-  "munge_file"
-      # munge_file ( $FILE , \%CONFIGURATION )
-
-      munge_file(
-        $zilla_file,
-        {
-          via => sub { ... },
-            lazy => $laziness
-        }
-      );
-
-   $FILE
-    A "::Role::File" object to munge.
-
-   %CONFIGURATION
-      {
-        via => $CODEREF,
-        lazy => $LAZINESS,
-      }
-
-   $CODEREF
-    Called to munge the file itself.
-
-    Passed a reference to the "::Role::File" instance, and a scalar
-    containing the contents of that file.
-
-    Return new content for the file via "return"
-
-      sub {
-        my ( $file, $content ) = @_ ;
-        ...;
-        return $newcontent;
-      }
-
-   $LAZINESS
-    Specify how lazy you want the munge to be performed. Normally, what this
-    is set to is dependent on the type of file being munged.
-
-      $LAZINESS = undef ;  # use default for the file type
-      $LAZINESS = 0     ;  # Munge immediately
-      $LAZINESS = 1     ;  # Defer munging till as late as possible.
-
-    For things that are normally backed by scalar values, such as
-    "::File::OnDisk" and "::File::InMemory" , the laziness is equivalent to
-    " $LAZINESS = 0 ", which is not lazy at all, and munges the file content
-    immediately.
-
-    For things backed by code, such as "::File::FromCode" , munging defaults
-    to " $LAZINESS = 1 ", where the actual munging sub you specify is
-    executed as late as possible.
-
-    You can specify the $LAZINESS value explicitly if you want to customize
-    the behavior, i.e.: Make something that is presently a scalar type get
-    munged as late as possible ( converting the file into a "FromCode" file
-    ), or make something currently backed by code get munged "now", (
-    converting the file into a "InMemory" file )
-
-  munge_files
-    This is mostly a convenience utility for munging a lot of files without
-    having to hand-code the looping logic.
-
-    It basically just proxies for "munge_file".
-
-      # munge_files ( \@FILEARRAY , \%CONFIGURATION )
-
-      munge_files( [ $zilla_file_one, $zilla_file_two, ], {
-        via => sub { ... },
-        lazy => $laziness,
-      });
-
-   @FILEARRAY
-    An "ArrayRef" of "$FILE"
-
-   See Also
-    *   "%CONFIGURATION"
-
-    *   "$CODEREF"
-
-    *   "$FILE"
-
-    *   "$LAZINESS"
-
-AUTHOR
-    Kent Fredric <kentnl@cpan.org>
+  perl Makefile.PL
+  make
+  make test
+  make install
 
 COPYRIGHT AND LICENSE
-    This software is copyright (c) 2014 by Kent Fredric <kentnl@cpan.org>.
 
-    This is free software; you can redistribute it and/or modify it under
-    the same terms as the Perl 5 programming language system itself.
+This software is copyright (c) 2017 by Kent Fredric <kentnl@cpan.org>.
 
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
