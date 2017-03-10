@@ -1,7 +1,6 @@
 use 5.008;    # utf8
 use strict;
 use warnings;
-use utf8;
 
 package Dist::Zilla::Util::SimpleMunge;
 
