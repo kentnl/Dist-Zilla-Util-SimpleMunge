@@ -21,7 +21,7 @@ name: Dist-Zilla-Util-SimpleMunge
 provides:
   Dist::Zilla::Util::SimpleMunge:
     file: lib/Dist/Zilla/Util/SimpleMunge.pm
-    version: '1.000002'
+    version: '1.000003'
 requires:
   Carp: '0'
   Dist::Zilla: '5.000'
@@ -36,4 +36,4 @@ resources:
   bugtracker: https://github.com/kentnl/Dist-Zilla-Util-SimpleMunge/issues
   homepage: https://github.com/kentnl/Dist-Zilla-Util-SimpleMunge
   repository: https://github.com/kentnl/Dist-Zilla-Util-SimpleMunge.git
-version: '1.000002'
+version: '1.000003'

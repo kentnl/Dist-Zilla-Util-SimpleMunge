@@ -4,7 +4,7 @@ use warnings;
 
 package Dist::Zilla::Util::SimpleMunge;
 
-our $VERSION = '1.000002';
+our $VERSION = '1.000003';
 
 # ABSTRACT: Make munging File::FromCode and File::InMemory easier.
 
@@ -641,7 +641,7 @@ Dist::Zilla::Util::SimpleMunge - Make munging File::FromCode and File::InMemory 
 
 =head1 VERSION
 
-version 1.000002
+version 1.000003
 
 =head1 SYNOPSIS
 

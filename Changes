@@ -1,5 +1,7 @@
 Release history for Dist-Zilla-Util-FileMunge-Simple
 
+1.000003 2017-03-10T14:48:59Z 62ffa3d
+
 1.000002 2017-03-10T14:45:08Z ef9039f
  - Bugfix: Avoid test failures with -Ddefault_inc_excludes_dot
 
